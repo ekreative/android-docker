@@ -1,6 +1,6 @@
 # Android docker image
 
-An image that lets us build android apps with docker
+An image that lets us build android apps with docker.
 
 ## Build command
 
