@@ -2,7 +2,7 @@ FROM ubuntu:15.10
 
 MAINTAINER Fred Cox "mcfedr@gmail.com"
 
-RUN dpkg --add-architecture i386 && apt-get update && apt-get install -y openjdk-7-jdk libncurses5:i386 libstdc++6:i386 zlib1g:i386 expect wget curl
+RUN dpkg --add-architecture i386 && apt-get update && apt-get install -y openjdk-7-jdk libncurses5:i386 libstdc++6:i386 zlib1g:i386 expect wget curl git
 
 ENV ANDROID_SDK_URL http://dl.google.com/android/android-sdk_r24.4.1-linux.tgz
 
