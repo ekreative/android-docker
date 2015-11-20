@@ -2,11 +2,21 @@ FROM ubuntu:15.10
 
 MAINTAINER Fred Cox "mcfedr@gmail.com"
 
-RUN dpkg --add-architecture i386 && apt-get update && apt-get install -y openjdk-7-jdk libncurses5:i386 libstdc++6:i386 zlib1g:i386 expect wget curl git
+RUN dpkg --add-architecture i386 \
+    && apt-get update \
+    && apt-get install -y software-properties-common libncurses5:i386 libstdc++6:i386 zlib1g:i386 expect wget curl git \
+    && add-apt-repository -y ppa:webupd8team/java \
+    && apt-get update \
+    && echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections \
+    && apt-get install -y oracle-java8-installer
+    && apt-get autoclean
 
 ENV ANDROID_SDK_URL http://dl.google.com/android/android-sdk_r24.4.1-linux.tgz
 
-RUN cd /opt && wget --output-document=android-sdk.tgz --quiet $ANDROID_SDK_URL && tar xzf android-sdk.tgz && rm -f android-sdk.tgz && chown -R root.root android-sdk-linux
+RUN cd /opt
+    && wget --output-document=android-sdk.tgz --quiet $ANDROID_SDK_URL
+    && tar xzf android-sdk.tgz && rm -f android-sdk.tgz
+    && chown -R root.root android-sdk-linux
 
 ENV ANDROID_HOME /opt/android-sdk-linux
 ENV PATH ${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
