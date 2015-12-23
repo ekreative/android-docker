@@ -4,11 +4,12 @@ MAINTAINER Fred Cox "mcfedr@gmail.com"
 
 RUN dpkg --add-architecture i386 \
     && apt-get update \
-    && apt-get install -y software-properties-common libncurses5:i386 libstdc++6:i386 zlib1g:i386 expect wget curl git \
+    && apt-get install -y software-properties-common libncurses5:i386 libstdc++6:i386 zlib1g:i386 expect wget curl git build-essential \
     && add-apt-repository -y ppa:webupd8team/java \
+    && curl -sL https://deb.nodesource.com/setup_5.x | bash - \
     && apt-get update \
     && echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections \
-    && apt-get install -y oracle-java8-installer \
+    && apt-get install -y oracle-java8-installer nodejs \
     && apt-get autoclean
 
 ENV ANDROID_SDK_URL http://dl.google.com/android/android-sdk_r24.4.1-linux.tgz
@@ -30,6 +31,8 @@ ENV ANDROID_EXTRA_PACKAGES android-22,build-tools-22.0.1,build-tools-23.0.0
 ENV ANDROID_REPOSITORIES extra-android-m2repository,extra-android-support,extra-google-m2repository
 
 RUN /opt/tools/android-accept-licenses.sh "android update sdk --no-ui --all --filter tools,platform-tools,build-tools-$ANDROID_BUILD_TOOLS_VERSION,android-$ANDROID_PLATFORM_VERSION,$ANDROID_EXTRA_PACKAGES,$ANDROID_REPOSITORIES"
+
+RUN npm install -g ios-build-tools
 
 RUN mkdir -p /opt/workspace
 WORKDIR /opt/workspace
