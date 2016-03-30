@@ -13,3 +13,9 @@ An image that lets us build android apps with docker using gitlab-ci
 ## Credit
 
 Borrowed a few ideas from [jacekmarchwicki/android](https://hub.docker.com/r/jacekmarchwicki/android/)
+
+## Finding new packages
+
+I use this command to list the available packages
+
+    android list sdk --all --extended
