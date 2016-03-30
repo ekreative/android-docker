@@ -26,8 +26,8 @@ COPY tools /opt/tools
 ENV PATH ${PATH}:/opt/tools
 
 ENV ANDROID_PLATFORM_VERSION 23
-ENV ANDROID_BUILD_TOOLS_VERSION 23.0.2
-ENV ANDROID_EXTRA_PACKAGES android-22,build-tools-22.0.1,build-tools-23.0.0
+ENV ANDROID_BUILD_TOOLS_VERSION 23.0.3
+ENV ANDROID_EXTRA_PACKAGES android-22,build-tools-22.0.1,build-tools-23.0.0,build-tools-23.0.1,build-tools-23.0.2
 ENV ANDROID_REPOSITORIES extra-android-m2repository,extra-android-support,extra-google-m2repository
 
 RUN /opt/tools/android-accept-licenses.sh "android update sdk --no-ui --all --filter tools,platform-tools,build-tools-$ANDROID_BUILD_TOOLS_VERSION,android-$ANDROID_PLATFORM_VERSION,$ANDROID_EXTRA_PACKAGES,$ANDROID_REPOSITORIES"
