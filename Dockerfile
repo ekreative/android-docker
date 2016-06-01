@@ -32,7 +32,7 @@ ENV ANDROID_REPOSITORIES extra-android-m2repository,extra-android-support,extra-
 
 RUN /opt/tools/android-accept-licenses.sh "android update sdk --no-ui --all --filter tools,platform-tools,build-tools-$ANDROID_BUILD_TOOLS_VERSION,android-$ANDROID_PLATFORM_VERSION,$ANDROID_EXTRA_PACKAGES,$ANDROID_REPOSITORIES"
 
-RUN npm install -g xcode-build-tools@3.1.7
+RUN npm install -g xcode-build-tools@3.2.1
 
 RUN mkdir -p /opt/workspace
 WORKDIR /opt/workspace
