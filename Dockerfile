@@ -34,5 +34,3 @@ RUN /opt/tools/android-accept-licenses.sh "android update sdk --no-ui --all --fi
 
 RUN npm install -g xcode-build-tools@4.0.3
 
-RUN mkdir -p /opt/workspace
-WORKDIR /opt/workspace
