@@ -7,6 +7,7 @@ MAINTAINER Fred Cox "mcfedr@gmail.com"
 RUN dpkg --add-architecture i386 \
     && apt-get update \
     && apt-get install -y software-properties-common libncurses5:i386 libstdc++6:i386 zlib1g:i386 unzip cmake expect wget curl git build-essential \
+    && apt-get install --reinstall ca-certificates \
     && add-apt-repository -y ppa:webupd8team/java \
     && curl -sL https://deb.nodesource.com/setup_6.x | bash - \
     && apt-get update \
