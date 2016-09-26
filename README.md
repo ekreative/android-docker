@@ -8,7 +8,7 @@ An image that lets us build android apps with docker using gitlab-ci
 
 ## Build an app
 
-    docker run -ti --rm --volume=$(pwd):/opt/workspace ekreative/android ./gradlew assembleRelease
+    docker run -ti --rm --volume=$(pwd):/srv -w /srv ekreative/android ./gradlew assembleRelease
 
 ## Credit
 
