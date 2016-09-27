@@ -54,4 +54,4 @@ ENV ANDROID_NDK_HOME /opt/android-ndk
 
 # Install upload-apk helper
 
-RUN npm install -g xcode-build-tools@4.0.3
+RUN npm install -g xcode-build-tools@4.0.6
