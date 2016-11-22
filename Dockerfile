@@ -9,7 +9,7 @@ RUN dpkg --add-architecture i386 \
     && apt-get install -y software-properties-common libncurses5:i386 libstdc++6:i386 zlib1g:i386 unzip cmake expect wget curl git build-essential \
     && apt-get install --reinstall ca-certificates \
     && add-apt-repository -y ppa:webupd8team/java \
-    && curl -sL https://deb.nodesource.com/setup_6.x | bash - \
+    && curl -sL https://deb.nodesource.com/setup_7.x | bash - \
     && apt-get update \
     && echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections \
     && apt-get install -y oracle-java8-installer nodejs \
