@@ -17,12 +17,12 @@ RUN dpkg --add-architecture i386 \
 
 # Install the SDK
 
-ENV ANDROID_SDK_URL http://dl.google.com/android/android-sdk_r24.4.1-linux.tgz
+ENV ANDROID_SDK_URL https://dl.google.com/android/repository/tools_r25.2.3-linux.zip
 
 RUN cd /opt \
-    && wget --output-document=android-sdk.tgz --quiet $ANDROID_SDK_URL \
-    && tar xzf android-sdk.tgz \
-    && rm -f android-sdk.tgz \
+    && wget --output-document=android-sdk.zip --quiet $ANDROID_SDK_URL \
+    && unzip android-sdk.zip -d android-sdk-linux \
+    && rm -f android-sdk.zip \
     && chown -R root:root android-sdk-linux
 
 ENV ANDROID_HOME /opt/android-sdk-linux
