@@ -47,7 +47,7 @@ ENV ANDROID_NDK_URL https://dl.google.com/android/repository/android-ndk-r13b-li
 RUN cd /opt \
     && wget --output-document=android-ndk.zip --quiet $ANDROID_NDK_URL \
     && unzip -q android-ndk.zip \
-    && rm -f android-sdk.zip \
+    && rm -f android-ndk.zip \
     && mv android-ndk-r13b android-ndk
     
 ENV ANDROID_NDK_HOME /opt/android-ndk
