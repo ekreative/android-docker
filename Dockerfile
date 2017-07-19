@@ -33,9 +33,9 @@ ENV PATH ${PATH}:/opt/tools
 
 # Install Android platform and things
 
-ENV ANDROID_PLATFORM_VERSION 25
-ENV ANDROID_BUILD_TOOLS_VERSION 25.0.3
-ENV ANDROID_EXTRA_PACKAGES "build-tools;25.0.2" "build-tools;25.0.1" "build-tools;25.0.0"
+ENV ANDROID_PLATFORM_VERSION 26
+ENV ANDROID_BUILD_TOOLS_VERSION 26.0.0
+ENV ANDROID_EXTRA_PACKAGES ""
 ENV ANDROID_REPOSITORIES "extras;android;m2repository" "extras;google;m2repository"
 ENV ANDROID_NDK "ndk-bundle"
 
