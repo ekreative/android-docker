@@ -18,4 +18,4 @@ Borrowed a few ideas from [jacekmarchwicki/android](https://hub.docker.com/r/jac
 
 I use this command to list the available packages
 
-    android list sdk --all --extended
+    sdkmanager --list
