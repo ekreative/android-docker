@@ -1,17 +1,12 @@
-FROM ubuntu:xenial
+FROM openjdk:8-jdk
 
 MAINTAINER Fred Cox "mcfedr@gmail.com"
 
-# Install Java and required libs and nodejs for the helper
-RUN dpkg --add-architecture i386 \
+ENV ANDROID_EMULATOR_DEPS "file libqt5widgets5"
+
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
     && apt-get update \
-    && apt-get install -y software-properties-common libncurses5:i386 libstdc++6:i386 zlib1g:i386 unzip cmake expect wget curl git build-essential \
-    && apt-get install --reinstall ca-certificates \
-    && add-apt-repository -y ppa:webupd8team/java \
-    && curl -sL https://deb.nodesource.com/setup_8.x | bash - \
-    && apt-get update \
-    && echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections \
-    && apt-get install -y oracle-java8-installer nodejs \
+    && apt-get install -y nodejs expect $ANDROID_EMULATOR_DEPS \
     && apt-get autoclean
 
 # Install the SDK
@@ -35,7 +30,12 @@ ENV ANDROID_BUILD_TOOLS_VERSION 26.0.0
 ENV ANDROID_EXTRA_PACKAGES ""
 ENV ANDROID_REPOSITORIES "extras;android;m2repository" "extras;google;m2repository"
 ENV ANDROID_CONSTRAINT_PACKAGES "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0"
-RUN android-accept-licenses "sdkmanager --verbose \"platform-tools\" \"platforms;android-$ANDROID_PLATFORM_VERSION\" \"build-tools;$ANDROID_BUILD_TOOLS_VERSION\" $ANDROID_EXTRA_PACKAGES $ANDROID_REPOSITORIES $ANDROID_CONSTRAINT_PACKAGES"
+ENV ANDROID_EMULATOR_PACKAGE "system-images;android-25;google_apis;arm64-v8a"
+RUN android-accept-licenses "sdkmanager --verbose \"platform-tools\" \"platforms;android-$ANDROID_PLATFORM_VERSION\" \"build-tools;$ANDROID_BUILD_TOOLS_VERSION\" $ANDROID_EXTRA_PACKAGES $ANDROID_REPOSITORIES $ANDROID_CONSTRAINT_PACKAGES $ANDROID_EMULATOR_PACKAGE"
+RUN android-avdmanager-create "avdmanager create avd --package \"$ANDROID_EMULATOR_PACKAGE\" --name test --abi \"google_apis/arm64-v8a\""
+
+# Fix for emulator detect 64bit
+ENV SHELL /bin/bash
 
 # Install upload-apk helper
 RUN npm install -g xcode-build-tools

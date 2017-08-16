@@ -1,0 +1,14 @@
+#!/usr/bin/expect -f
+
+set timeout 1800
+set cmd [lindex $argv 0]
+set licenses [lindex $argv 1]
+
+spawn {*}$cmd
+expect {
+  "Do you wish to create a custom hardware profile\? [no]" {
+        exp_send "no\r"
+        exp_continue
+  }
+  eof
+}
