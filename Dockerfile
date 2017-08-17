@@ -27,7 +27,7 @@ ENV PATH ${PATH}:/opt/tools
 # Install Android platform and things
 ENV ANDROID_PLATFORM_VERSION 26
 ENV ANDROID_BUILD_TOOLS_VERSION 26.0.0
-ENV ANDROID_EXTRA_PACKAGES ""
+ENV ANDROID_EXTRA_PACKAGES "emulator"
 ENV ANDROID_REPOSITORIES "extras;android;m2repository" "extras;google;m2repository"
 ENV ANDROID_CONSTRAINT_PACKAGES "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0"
 ENV ANDROID_EMULATOR_PACKAGE "system-images;android-25;google_apis;arm64-v8a"
