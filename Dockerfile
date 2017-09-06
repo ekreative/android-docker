@@ -22,7 +22,7 @@ ENV PATH ${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/tools:${ANDROID_HOME}/platfor
 
 # Install custom tools
 COPY tools /opt/tools
-ENV PATH ${PATH}:/opt/tools
+ENV PATH /opt/tools:${PATH}
 
 # Install Android platform and things
 ENV ANDROID_PLATFORM_VERSION 26
