@@ -4,7 +4,7 @@ MAINTAINER Fred Cox "mcfedr@gmail.com"
 
 ENV ANDROID_EMULATOR_DEPS "file libqt5widgets5"
 
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
+RUN curl -sL https://deb.nodesource.com/setup_9.x | bash - \
     && apt-get update \
     && apt-get install -y nodejs expect $ANDROID_EMULATOR_DEPS \
     && apt-get autoclean
