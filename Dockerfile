@@ -4,7 +4,7 @@ MAINTAINER Fred Cox "mcfedr@gmail.com"
 
 ENV ANDROID_EMULATOR_DEPS "file libqt5widgets5"
 
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
+RUN curl -sL https://deb.nodesource.com/setup_11.x | bash - \
     && apt-get update \
     && apt-get install -y nodejs expect $ANDROID_EMULATOR_DEPS \
     && apt-get autoclean
@@ -23,6 +23,7 @@ ENV PATH ${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/tools:${ANDROID_HOME}/platfor
 # Install custom tools
 COPY tools /opt/tools
 ENV PATH /opt/tools:${PATH}
+RUN license_accepter
 
 # Install Android platform and things
 ENV ANDROID_PLATFORM_VERSION 28
