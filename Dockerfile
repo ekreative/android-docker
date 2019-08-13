@@ -2,12 +2,12 @@ FROM openjdk:8-jdk
 
 MAINTAINER Fred Cox "mcfedr@gmail.com"
 
-ENV ANDROID_EMULATOR_DEPS "file qt5-default"
+ENV ANDROID_EMULATOR_DEPS "file qt5-default libpulse0"
 
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - \
     && apt-get update \
     && apt-get install -y nodejs expect $ANDROID_EMULATOR_DEPS \
-    && apt-get autoclean
+    && rm -rf /var/lib/apt/lists/*
 
 # Install the SDK
 ENV ANDROID_SDK_URL https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip

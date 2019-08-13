@@ -14,6 +14,14 @@ docker build -t ekreative/android .
 docker run -ti --rm --volume=$(pwd):/srv -w /srv ekreative/android ./gradlew assembleRelease
 ```
 
+## Use emulator
+
+```bash
+android-start-emulator &
+android-wait-for-emulator
+/gradlew test
+```
+
 ## Credit
 
 Borrowed a few ideas from [jacekmarchwicki/android](https://hub.docker.com/r/jacekmarchwicki/android/)

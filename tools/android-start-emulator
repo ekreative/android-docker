@@ -1,0 +1,2 @@
+#!/bin/bash
+emulator -avd test -no-audio -no-boot-anim -no-window -accel on -gpu off $@
