@@ -2,7 +2,7 @@ FROM openjdk:8-jdk
 
 MAINTAINER Fred Cox "mcfedr@gmail.com"
 
-ENV ANDROID_EMULATOR_DEPS "file libqt5widgets5"
+ENV ANDROID_EMULATOR_DEPS "file qt5-default"
 
 RUN curl -sL https://deb.nodesource.com/setup_11.x | bash - \
     && apt-get update \
@@ -38,6 +38,8 @@ ENV PATH ${ANDROID_HOME}/build-tools/${ANDROID_BUILD_TOOLS_VERSION}:${PATH}
 
 # Fix for emulator detect 64bit
 ENV SHELL /bin/bash
+# https://www.bram.us/2017/05/12/launching-the-android-emulator-from-the-command-line/
+ENV PATH $ANDROID_HOME/emulator:$PATH
 
 # Install upload-apk helper
 RUN npm install -g xcode-build-tools
