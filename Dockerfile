@@ -65,7 +65,7 @@ RUN mkdir /opt/jaxb_lib \
   && sed -i '/^CLASSPATH=/a CLASSPATH=/opt/jaxb_lib/activation.jar:/opt/jaxb_lib/jaxb-impl.jar:/opt/jaxb_lib/jaxb-xjc.jar:/opt/jaxb_lib/jaxb-core.jar:/opt/jaxb_lib/jaxb-jxc.jar:/opt/jaxb_lib/jaxb-api.jar:$CLASSPATH' $ANDROID_HOME/tools/bin/avdmanager
 
 # Install custom tools
-COPY tools /opt/tools
+COPY tools/license_accepter /opt/tools/
 ENV PATH /opt/tools:${PATH}
 RUN license_accepter
 
@@ -76,13 +76,17 @@ ENV ANDROID_EXTRA_PACKAGES "build-tools;28.0.0" "build-tools;28.0.1" "build-tool
 ENV ANDROID_REPOSITORIES "extras;android;m2repository" "extras;google;m2repository"
 ENV ANDROID_CONSTRAINT_PACKAGES "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0"
 ENV ANDROID_EMULATOR_PACKAGE "system-images;android-$ANDROID_PLATFORM_VERSION;google_apis_playstore;x86_64"
-RUN android-accept-licenses "sdkmanager --verbose \"platform-tools\" \"emulator\" \"platforms;android-$ANDROID_PLATFORM_VERSION\" \"build-tools;$ANDROID_BUILD_TOOLS_VERSION\" $ANDROID_EXTRA_PACKAGES $ANDROID_REPOSITORIES $ANDROID_CONSTRAINT_PACKAGES $ANDROID_EMULATOR_PACKAGE"
+RUN sdkmanager --verbose "platform-tools" "emulator" "platforms;android-$ANDROID_PLATFORM_VERSION" "build-tools;$ANDROID_BUILD_TOOLS_VERSION" $ANDROID_EXTRA_PACKAGES $ANDROID_REPOSITORIES $ANDROID_CONSTRAINT_PACKAGES $ANDROID_EMULATOR_PACKAGE
 ENV PATH ${ANDROID_HOME}/build-tools/${ANDROID_BUILD_TOOLS_VERSION}:${PATH}
 
 # Fix for emulator detect 64bit
 ENV SHELL /bin/bash
 # https://www.bram.us/2017/05/12/launching-the-android-emulator-from-the-command-line/
 ENV PATH $ANDROID_HOME/emulator:$PATH
+
+COPY tools/android-avdmanager-create /opt/tools/
+COPY tools/android-start-emulator /opt/tools/
+COPY tools/android-wait-for-emulator /opt/tools/
 
 # Install upload-apk helper
 RUN npm install -g xcode-build-tools
