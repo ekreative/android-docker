@@ -32,7 +32,7 @@ RUN cd /opt \
     && chown -R root:root android-sdk-linux
 
 ENV ANDROID_HOME /opt/android-sdk-linux
-ENV PATH ${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${PATH}
+ENV PATH $ANDROID_HOME/tools/bin:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$PATH
 
 # Libs required for sdkmanager to run using openjdk-12
 RUN mkdir /opt/jaxb_lib \
@@ -47,7 +47,7 @@ RUN mkdir /opt/jaxb_lib \
 
 # Install custom tools
 COPY tools/license_accepter /opt/tools/
-ENV PATH /opt/tools:${PATH}
+ENV PATH /opt/tools:$PATH
 RUN license_accepter
 
 # Install Android platform and things
@@ -56,8 +56,8 @@ ENV ANDROID_BUILD_TOOLS_VERSION 29.0.2
 ENV ANDROID_EXTRA_PACKAGES "build-tools;29.0.0" "build-tools;29.0.1"
 ENV ANDROID_REPOSITORIES "extras;android;m2repository" "extras;google;m2repository"
 ENV ANDROID_CONSTRAINT_PACKAGES "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0"
-RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_VERSION" "build-tools;$ANDROID_BUILD_TOOLS_VERSION" $ANDROID_EXTRA_PACKAGES $ANDROID_REPOSITORIES $ANDROID_CONSTRAINT_PACKAGES $ANDROID_EMULATOR_PACKAGE
-ENV PATH ${ANDROID_HOME}/build-tools/${ANDROID_BUILD_TOOLS_VERSION}:${PATH}
+RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_VERSION" "build-tools;$ANDROID_BUILD_TOOLS_VERSION" $ANDROID_EXTRA_PACKAGES $ANDROID_REPOSITORIES $ANDROID_CONSTRAINT_PACKAGES $ANDROID_EMULATOR_PACKAGE $ANDROID_NDK_PACKAGES
+ENV PATH $ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH
 
 # Fix for emulator detect 64bit
 ENV SHELL /bin/bash

@@ -12,7 +12,7 @@ declare -A extraPackages=(
 )
 
 for variant in '28' '29'; do
-  for type in 'default' 'emulator'; do
+  for type in 'default' 'emulator' 'ndk'; do
     template="Dockerfile.template"
     if [ "$type" != "default" ]; then
       dir="$variant-$type"
@@ -24,9 +24,15 @@ for variant in '28' '29'; do
     else
       rmEmu=''
     fi
+    if [ "$type" != "ndk" ]; then
+      rmNdk='/^ENV (ANDROID_NDK_PACKAGES|ANDROID_NDK_HOME)/d;'
+    else
+      rmNdk=''
+    fi
     mkdir -p "$dir"
     sed -E '
       '"$rmEmu"'
+      '"$rmNdk"'
       s/%%VARIANT%%/'"$variant"'/;
       s/%%BUILD_TOOLS%%/'"${buildTools[$variant]}"'/;
       s/%%EXTRA_PACKAGES%%/'"${extraPackages[$variant]}"'/;

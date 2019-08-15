@@ -2,7 +2,6 @@ FROM ubuntu:disco
 
 MAINTAINER Fred Cox "mcfedr@gmail.com"
 
-ENV ANDROID_EMULATOR_DEPS "file qt5-default libpulse0"
 
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -57,9 +56,10 @@ ENV ANDROID_BUILD_TOOLS_VERSION 28.0.3
 ENV ANDROID_EXTRA_PACKAGES "build-tools;28.0.0" "build-tools;28.0.1" "build-tools;28.0.2"
 ENV ANDROID_REPOSITORIES "extras;android;m2repository" "extras;google;m2repository"
 ENV ANDROID_CONSTRAINT_PACKAGES "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0"
-ENV ANDROID_EMULATOR_PACKAGE "emulator" "system-images;android-$ANDROID_PLATFORM_VERSION;google_apis_playstore;x86_64"
+ENV ANDROID_NDK_PACKAGES "ndk-bundle" "cmake;3.6.4111459" "lldb;3.1"
 RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_VERSION" "build-tools;$ANDROID_BUILD_TOOLS_VERSION" $ANDROID_EXTRA_PACKAGES $ANDROID_REPOSITORIES $ANDROID_CONSTRAINT_PACKAGES $ANDROID_EMULATOR_PACKAGE $ANDROID_NDK_PACKAGES
 ENV PATH $ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH
+ENV ANDROID_NDK_HOME $ANDROID_HOME/ndk-bundle
 
 # Fix for emulator detect 64bit
 ENV SHELL /bin/bash
