@@ -1,2 +1,4 @@
 #!/bin/bash
-emulator -avd test -no-audio -no-boot-anim -no-window -accel on -gpu off $@
+android-avdmanager-create "avdmanager create avd --package \"$ANDROID_EMULATOR_PACKAGE\" --name test --abi \"google_apis_playstore/x86_64\""
+emulator -avd test -no-audio -no-boot-anim -no-window -accel on -gpu off &
+android-wait-for-emulator
