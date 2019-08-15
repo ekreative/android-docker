@@ -22,6 +22,8 @@ RUN apt-get update \
       expect \
       # emulator
       file \
+      # gem specific_install
+      git \
       # emulator
       libpulse0 \
       nano \
@@ -91,4 +93,8 @@ COPY tools/android-wait-for-emulator /opt/tools/
 # Install upload-apk helper
 RUN npm install -g xcode-build-tools
 # Without rake fails to install stf-client
-RUN gem install rake stf-client
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+RUN gem install specific_install rake
+#RUN gem install stf-client
+# https://github.com/Malinskiy/stf-client/pull/4
+RUN gem specific_install https://github.com/neofreko/stf-client.git addAdbPublicKey
