@@ -6,22 +6,27 @@ ENV ANDROID_EMULATOR_DEPS "file qt5-default libpulse0"
 
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-      # stf-client
-      build-essential \
       expect \
-      # gem specific_install
-      git \
       openjdk-12-jdk \
       # stf-client
       ruby \
+      unzip \
       wget \
       $ANDROID_EMULATOR_DEPS \
+    && savedAptMark="$(apt-mark showmanual)" \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+      # stf-client
+      build-essential \
+      # gem specific_install
+      git \
     # Without rake fails to install stf-client
     && gem install specific_install rake \
     #&& gem install stf-client \
     # https://github.com/Malinskiy/stf-client/pull/4
     && gem specific_install https://github.com/neofreko/stf-client.git addAdbPublicKey \
-    && apt-get remove -y build-essential git \
+    && apt-mark auto '.*' > /dev/null \
+    && apt-mark manual $savedAptMark > /dev/null \
+    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
     && rm -rf /var/lib/apt/lists/*
 
 # Install the SDK
