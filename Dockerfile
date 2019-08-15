@@ -86,4 +86,5 @@ ENV PATH $ANDROID_HOME/emulator:$PATH
 
 # Install upload-apk helper
 RUN npm install -g xcode-build-tools
-RUN gem install stf-client
+# Without rake fails to install stf-client
+RUN gem install rake stf-client
