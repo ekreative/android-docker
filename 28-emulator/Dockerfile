@@ -1,0 +1,71 @@
+FROM ubuntu:disco
+
+MAINTAINER Fred Cox "mcfedr@gmail.com"
+
+ENV ANDROID_EMULATOR_DEPS "file qt5-default libpulse0"
+
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+      # stf-client
+      build-essential \
+      expect \
+      # gem specific_install
+      git \
+      openjdk-12-jdk \
+      # stf-client
+      ruby \
+      wget \
+      $ANDROID_EMULATOR_DEPS \
+    # Without rake fails to install stf-client
+    && gem install specific_install rake \
+    #&& gem install stf-client \
+    # https://github.com/Malinskiy/stf-client/pull/4
+    && gem specific_install https://github.com/neofreko/stf-client.git addAdbPublicKey \
+    && apt-get remove -y build-essential git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install the SDK
+ENV ANDROID_SDK_URL https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
+RUN cd /opt \
+    && wget --output-document=android-sdk.zip --quiet $ANDROID_SDK_URL \
+    && unzip android-sdk.zip -d android-sdk-linux \
+    && rm -f android-sdk.zip \
+    && chown -R root:root android-sdk-linux
+
+ENV ANDROID_HOME /opt/android-sdk-linux
+ENV PATH ${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${PATH}
+
+# Libs required for sdkmanager to run using openjdk-12
+RUN mkdir /opt/jaxb_lib \
+  && wget http://central.maven.org/maven2/javax/activation/activation/1.1.1/activation-1.1.1.jar -O /opt/jaxb_lib/activation.jar \
+  && wget http://central.maven.org/maven2/javax/xml/jaxb-impl/2.1/jaxb-impl-2.1.jar -O /opt/jaxb_lib/jaxb-impl.jar \
+  && wget http://central.maven.org/maven2/org/glassfish/jaxb/jaxb-xjc/2.3.2/jaxb-xjc-2.3.2.jar -O /opt/jaxb_lib/jaxb-xjc.jar \
+  && wget http://central.maven.org/maven2/org/glassfish/jaxb/jaxb-core/2.3.0.1/jaxb-core-2.3.0.1.jar -O /opt/jaxb_lib/jaxb-core.jar \
+  && wget http://central.maven.org/maven2/org/glassfish/jaxb/jaxb-jxc/2.3.2/jaxb-jxc-2.3.2.jar -O /opt/jaxb_lib/jaxb-jxc.jar \
+  && wget http://central.maven.org/maven2/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1.jar -O /opt/jaxb_lib/jaxb-api.jar \
+  && sed -i '/^CLASSPATH=/a CLASSPATH=/opt/jaxb_lib/activation.jar:/opt/jaxb_lib/jaxb-impl.jar:/opt/jaxb_lib/jaxb-xjc.jar:/opt/jaxb_lib/jaxb-core.jar:/opt/jaxb_lib/jaxb-jxc.jar:/opt/jaxb_lib/jaxb-api.jar:$CLASSPATH' $ANDROID_HOME/tools/bin/sdkmanager \
+  && sed -i '/^CLASSPATH=/a CLASSPATH=/opt/jaxb_lib/activation.jar:/opt/jaxb_lib/jaxb-impl.jar:/opt/jaxb_lib/jaxb-xjc.jar:/opt/jaxb_lib/jaxb-core.jar:/opt/jaxb_lib/jaxb-jxc.jar:/opt/jaxb_lib/jaxb-api.jar:$CLASSPATH' $ANDROID_HOME/tools/bin/avdmanager
+
+# Install custom tools
+COPY tools/license_accepter /opt/tools/
+ENV PATH /opt/tools:${PATH}
+RUN license_accepter
+
+# Install Android platform and things
+ENV ANDROID_PLATFORM_VERSION 28
+ENV ANDROID_BUILD_TOOLS_VERSION 28.0.3
+ENV ANDROID_EXTRA_PACKAGES "build-tools;28.0.0" "build-tools;28.0.1" "build-tools;28.0.2"
+ENV ANDROID_REPOSITORIES "extras;android;m2repository" "extras;google;m2repository"
+ENV ANDROID_CONSTRAINT_PACKAGES "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0"
+ENV ANDROID_EMULATOR_PACKAGE "emulator" "system-images;android-$ANDROID_PLATFORM_VERSION;google_apis_playstore;x86_64"
+RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_VERSION" "build-tools;$ANDROID_BUILD_TOOLS_VERSION" $ANDROID_EXTRA_PACKAGES $ANDROID_REPOSITORIES $ANDROID_CONSTRAINT_PACKAGES $ANDROID_EMULATOR_PACKAGE
+ENV PATH ${ANDROID_HOME}/build-tools/${ANDROID_BUILD_TOOLS_VERSION}:${PATH}
+
+# Fix for emulator detect 64bit
+ENV SHELL /bin/bash
+# https://www.bram.us/2017/05/12/launching-the-android-emulator-from-the-command-line/
+ENV PATH $ANDROID_HOME/emulator:$PATH
+
+COPY tools/android-avdmanager-create /opt/tools/
+COPY tools/android-start-emulator /opt/tools/
+COPY tools/android-wait-for-emulator /opt/tools/
