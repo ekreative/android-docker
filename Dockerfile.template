@@ -7,8 +7,8 @@ ENV ANDROID_EMULATOR_DEPS "file qt5-default libpulse0"
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
       expect \
+      nano \
       openjdk-12-jdk \
-      # stf-client
       ruby \
       unzip \
       wget \

@@ -5,7 +5,8 @@ An image that lets us build android apps with docker using gitlab-ci
 ## Build command
 
 ```bash
-docker build -t ekreative/android .
+./update.sh
+docker build -t ekreative/android:latest 29
 ```
 
 ## Build an app
