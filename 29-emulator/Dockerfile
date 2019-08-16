@@ -2,8 +2,6 @@ FROM ubuntu:disco
 
 MAINTAINER Fred Cox "mcfedr@gmail.com"
 
-ENV ANDROID_EMULATOR_DEPS "file qt5-default libpulse0"
-
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
       expect \
@@ -12,7 +10,6 @@ RUN apt-get update \
       ruby \
       unzip \
       wget \
-      $ANDROID_EMULATOR_DEPS \
     && savedAptMark="$(apt-mark showmanual)" \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
       # stf-client
@@ -59,12 +56,21 @@ RUN license_accepter
 # Install Android platform and things
 ENV ANDROID_PLATFORM_VERSION 29
 ENV ANDROID_BUILD_TOOLS_VERSION 29.0.2
+ENV PATH $ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH
 ENV ANDROID_EXTRA_PACKAGES "build-tools;29.0.0" "build-tools;29.0.1"
 ENV ANDROID_REPOSITORIES "extras;android;m2repository" "extras;google;m2repository"
 ENV ANDROID_CONSTRAINT_PACKAGES "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0"
-ENV ANDROID_EMULATOR_PACKAGE "emulator" "system-images;android-$ANDROID_PLATFORM_VERSION;google_apis_playstore;x86_64"
-RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_VERSION" "build-tools;$ANDROID_BUILD_TOOLS_VERSION" $ANDROID_EXTRA_PACKAGES $ANDROID_REPOSITORIES $ANDROID_CONSTRAINT_PACKAGES $ANDROID_EMULATOR_PACKAGE $ANDROID_NDK_PACKAGES
-ENV PATH $ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH
+RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_VERSION" "build-tools;$ANDROID_BUILD_TOOLS_VERSION" $ANDROID_EXTRA_PACKAGES $ANDROID_REPOSITORIES $ANDROID_CONSTRAINT_PACKAGES
+
+##<emulator>##
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+      file \
+      qt5-default \
+      libpulse0 \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN sdkmanager --verbose "emulator" "system-images;android-$ANDROID_PLATFORM_VERSION;google_apis_playstore;x86_64"
 
 # Fix for emulator detect 64bit
 ENV SHELL /bin/bash
@@ -74,3 +80,5 @@ ENV PATH $ANDROID_HOME/emulator:$PATH
 COPY tools-emulator/android-avdmanager-create /opt/tools/
 COPY tools-emulator/android-start-emulator /opt/tools/
 COPY tools-emulator/android-wait-for-emulator /opt/tools/
+##</emulator>##
+

@@ -29,14 +29,13 @@ for variant in '28' '29'; do
     else
       extraSed='
         '"$extraSed"'
-        /^ENV (ANDROID_EMULATOR_PACKAGE|ANDROID_EMULATOR_DEPS)/d;
-        /^COPY tools-emulator/d;
+        /##<emulator>##/,/##<\/emulator>##/d;
       '
     fi
     if [ "$type" != "ndk" ]; then
       extraSed='
         '"$extraSed"'
-        /^ENV (ANDROID_NDK_PACKAGES|ANDROID_NDK_HOME)/d;
+        /##<ndk>##/,/##<\/ndk>##/d;
       '
     fi
     sed -E '
