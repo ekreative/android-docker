@@ -34,8 +34,9 @@ RUN cd /opt \
     && rm -f android-sdk.zip \
     && chown -R root:root android-sdk-linux
 
-ENV ANDROID_HOME /opt/android-sdk-linux
-ENV PATH $ANDROID_HOME/tools/bin:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$PATH
+ENV ANDROID_SDK_ROOT /opt/android-sdk-linux
+ENV ANDROID_HOME $ANDROID_SDK_ROOT
+ENV PATH $ANDROID_SDK_ROOT/tools/bin:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools:$PATH
 
 # Libs required for sdkmanager to run using openjdk-12
 RUN mkdir /opt/jaxb_lib \
@@ -45,8 +46,8 @@ RUN mkdir /opt/jaxb_lib \
   && wget http://central.maven.org/maven2/org/glassfish/jaxb/jaxb-core/2.3.0.1/jaxb-core-2.3.0.1.jar -O /opt/jaxb_lib/jaxb-core.jar \
   && wget http://central.maven.org/maven2/org/glassfish/jaxb/jaxb-jxc/2.3.2/jaxb-jxc-2.3.2.jar -O /opt/jaxb_lib/jaxb-jxc.jar \
   && wget http://central.maven.org/maven2/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1.jar -O /opt/jaxb_lib/jaxb-api.jar \
-  && sed -i '/^CLASSPATH=/a CLASSPATH=/opt/jaxb_lib/activation.jar:/opt/jaxb_lib/jaxb-impl.jar:/opt/jaxb_lib/jaxb-xjc.jar:/opt/jaxb_lib/jaxb-core.jar:/opt/jaxb_lib/jaxb-jxc.jar:/opt/jaxb_lib/jaxb-api.jar:$CLASSPATH' $ANDROID_HOME/tools/bin/sdkmanager \
-  && sed -i '/^CLASSPATH=/a CLASSPATH=/opt/jaxb_lib/activation.jar:/opt/jaxb_lib/jaxb-impl.jar:/opt/jaxb_lib/jaxb-xjc.jar:/opt/jaxb_lib/jaxb-core.jar:/opt/jaxb_lib/jaxb-jxc.jar:/opt/jaxb_lib/jaxb-api.jar:$CLASSPATH' $ANDROID_HOME/tools/bin/avdmanager
+  && sed -i '/^CLASSPATH=/a CLASSPATH=/opt/jaxb_lib/activation.jar:/opt/jaxb_lib/jaxb-impl.jar:/opt/jaxb_lib/jaxb-xjc.jar:/opt/jaxb_lib/jaxb-core.jar:/opt/jaxb_lib/jaxb-jxc.jar:/opt/jaxb_lib/jaxb-api.jar:$CLASSPATH' $ANDROID_SDK_ROOT/tools/bin/sdkmanager \
+  && sed -i '/^CLASSPATH=/a CLASSPATH=/opt/jaxb_lib/activation.jar:/opt/jaxb_lib/jaxb-impl.jar:/opt/jaxb_lib/jaxb-xjc.jar:/opt/jaxb_lib/jaxb-core.jar:/opt/jaxb_lib/jaxb-jxc.jar:/opt/jaxb_lib/jaxb-api.jar:$CLASSPATH' $ANDROID_SDK_ROOT/tools/bin/avdmanager
 
 # Install custom tools
 COPY tools/license_accepter /opt/tools/
@@ -56,7 +57,7 @@ RUN license_accepter
 # Install Android platform and things
 ENV ANDROID_PLATFORM_VERSION 28
 ENV ANDROID_BUILD_TOOLS_VERSION 28.0.3
-ENV PATH $ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH
+ENV PATH $ANDROID_SDK_ROOT/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH
 ENV ANDROID_EXTRA_PACKAGES "build-tools;28.0.0" "build-tools;28.0.1" "build-tools;28.0.2"
 ENV ANDROID_REPOSITORIES "extras;android;m2repository" "extras;google;m2repository"
 ENV ANDROID_CONSTRAINT_PACKAGES "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0"
@@ -65,6 +66,7 @@ RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_V
 
 ##<ndk>##
 ENV ANDROID_NDK_PACKAGES "ndk-bundle" "cmake;3.10.2.4988404" "lldb;3.1"
-ENV ANDROID_NDK_HOME $ANDROID_HOME/ndk-bundle
+ENV ANDROID_NDK_ROOT $ANDROID_HOME/ndk-bundle
+ENV ANDROID_NDK_HOME $ANDROID_NDK_ROOT
 RUN sdkmanager --verbose $ANDROID_NDK_PACKAGES
 ##</ndk>##

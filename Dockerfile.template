@@ -71,7 +71,8 @@ RUN apt-get update \
       libpulse0 \
     && rm -rf /var/lib/apt/lists/*
 
-RUN sdkmanager --verbose "emulator" "system-images;android-$ANDROID_PLATFORM_VERSION;google_apis_playstore;x86_64"
+ENV ANDROID_EMULATOR_PACKAGE "system-images;android-$ANDROID_PLATFORM_VERSION;google_apis_playstore;x86_64"
+RUN sdkmanager --verbose "emulator" $ANDROID_EMULATOR_PACKAGE
 
 # Fix for emulator detect 64bit
 ENV SHELL /bin/bash
