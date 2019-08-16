@@ -12,7 +12,7 @@ declare -A extraPackages=(
 )
 
 for variant in '28' '29'; do
-  for type in 'default' 'emulator' 'ndk'; do
+  for type in 'default' 'emulator' 'ndk' 'stf-client'; do
     template="Dockerfile.template"
     if [ "$type" != "default" ]; then
       dir="$variant-$type"
@@ -36,6 +36,12 @@ for variant in '28' '29'; do
       extraSed='
         '"$extraSed"'
         /##<ndk>##/,/##<\/ndk>##/d;
+      '
+    fi
+    if [ "$type" != "stf-client" ]; then
+      extraSed='
+        '"$extraSed"'
+        /##<stf-client>##/,/##<\/stf-client>##/d;
       '
     fi
     sed -E '

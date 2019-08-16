@@ -49,5 +49,25 @@ ENV ANDROID_REPOSITORIES "extras;android;m2repository" "extras;google;m2reposito
 ENV ANDROID_CONSTRAINT_PACKAGES "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0"
 RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_VERSION" "build-tools;$ANDROID_BUILD_TOOLS_VERSION" $ANDROID_EXTRA_PACKAGES $ANDROID_REPOSITORIES $ANDROID_CONSTRAINT_PACKAGES
 
+##<stf-client>##
+RUN apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    ruby \
+  && savedAptMark="$(apt-mark showmanual)" \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    # stf-client
+    build-essential \
+    # gem specific_install
+    git \
+  # Without rake fails to install stf-client
+  && gem install specific_install rake \
+  # && gem install rake stf-client \
+  # https://github.com/Malinskiy/stf-client/pull/10
+  && gem specific_install https://github.com/mcfedr/stf-client.git add-adb-key \
+  && apt-mark auto '.*' > /dev/null \
+  && apt-mark manual $savedAptMark > /dev/null \
+  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
+  && rm -rf /var/lib/apt/lists/*
+##</stf-client>##
 
 

@@ -41,13 +41,33 @@ ENV PATH /opt/tools:$PATH
 RUN license_accepter
 
 # Install Android platform and things
-ENV ANDROID_PLATFORM_VERSION 28
-ENV ANDROID_BUILD_TOOLS_VERSION 28.0.3
+ENV ANDROID_PLATFORM_VERSION 29
+ENV ANDROID_BUILD_TOOLS_VERSION 29.0.2
 ENV PATH $ANDROID_SDK_ROOT/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH
-ENV ANDROID_EXTRA_PACKAGES "build-tools;28.0.0" "build-tools;28.0.1" "build-tools;28.0.2"
+ENV ANDROID_EXTRA_PACKAGES "build-tools;29.0.0" "build-tools;29.0.1"
 ENV ANDROID_REPOSITORIES "extras;android;m2repository" "extras;google;m2repository"
 ENV ANDROID_CONSTRAINT_PACKAGES "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0"
 RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_VERSION" "build-tools;$ANDROID_BUILD_TOOLS_VERSION" $ANDROID_EXTRA_PACKAGES $ANDROID_REPOSITORIES $ANDROID_CONSTRAINT_PACKAGES
 
+##<stf-client>##
+RUN apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    ruby \
+  && savedAptMark="$(apt-mark showmanual)" \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    # stf-client
+    build-essential \
+    # gem specific_install
+    git \
+  # Without rake fails to install stf-client
+  && gem install specific_install rake \
+  # && gem install rake stf-client \
+  # https://github.com/Malinskiy/stf-client/pull/10
+  && gem specific_install https://github.com/mcfedr/stf-client.git add-adb-key \
+  && apt-mark auto '.*' > /dev/null \
+  && apt-mark manual $savedAptMark > /dev/null \
+  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
+  && rm -rf /var/lib/apt/lists/*
+##</stf-client>##
 
 
