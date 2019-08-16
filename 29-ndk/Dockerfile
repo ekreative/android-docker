@@ -61,7 +61,7 @@ ENV ANDROID_BUILD_TOOLS_VERSION 29.0.2
 ENV ANDROID_EXTRA_PACKAGES "build-tools;29.0.0" "build-tools;29.0.1"
 ENV ANDROID_REPOSITORIES "extras;android;m2repository" "extras;google;m2repository"
 ENV ANDROID_CONSTRAINT_PACKAGES "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0"
-ENV ANDROID_NDK_PACKAGES "ndk-bundle" "cmake;3.6.4111459" "lldb;3.1"
+ENV ANDROID_NDK_PACKAGES "ndk-bundle" "cmake;3.10.2.4988404" "lldb;3.1"
 RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_VERSION" "build-tools;$ANDROID_BUILD_TOOLS_VERSION" $ANDROID_EXTRA_PACKAGES $ANDROID_REPOSITORIES $ANDROID_CONSTRAINT_PACKAGES $ANDROID_EMULATOR_PACKAGE $ANDROID_NDK_PACKAGES
 ENV PATH $ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH
 ENV ANDROID_NDK_HOME $ANDROID_HOME/ndk-bundle
