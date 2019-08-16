@@ -39,6 +39,7 @@ ENV ANDROID_HOME $ANDROID_SDK_ROOT
 ENV PATH $ANDROID_SDK_ROOT/tools/bin:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools:$PATH
 
 # Libs required for sdkmanager to run using openjdk-12
+# https://stackoverflow.com/a/55982976/859027
 RUN mkdir /opt/jaxb_lib \
   && wget http://central.maven.org/maven2/javax/activation/activation/1.1.1/activation-1.1.1.jar -O /opt/jaxb_lib/activation.jar \
   && wget http://central.maven.org/maven2/javax/xml/jaxb-impl/2.1/jaxb-impl-2.1.jar -O /opt/jaxb_lib/jaxb-impl.jar \
