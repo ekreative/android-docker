@@ -71,6 +71,6 @@ ENV SHELL /bin/bash
 # https://www.bram.us/2017/05/12/launching-the-android-emulator-from-the-command-line/
 ENV PATH $ANDROID_HOME/emulator:$PATH
 
-COPY tools/android-avdmanager-create /opt/tools/
-COPY tools/android-start-emulator /opt/tools/
-COPY tools/android-wait-for-emulator /opt/tools/
+COPY tools-emulator/android-avdmanager-create /opt/tools/
+COPY tools-emulator/android-start-emulator /opt/tools/
+COPY tools-emulator/android-wait-for-emulator /opt/tools/

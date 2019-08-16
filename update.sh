@@ -19,24 +19,31 @@ for variant in '28' '29'; do
     else
       dir="$variant"
     fi
-    if [ "$type" != "emulator" ]; then
-      rmEmu='/^ENV (ANDROID_EMULATOR_PACKAGE|ANDROID_EMULATOR_DEPS)/d;'
+    rm -rf "$dir"
+    mkdir -p "$dir"
+    cp -r tools/ "$dir/tools/"
+
+    extraSed=''
+    if [ "$type" = "emulator" ]; then
+      cp -r tools-emulator/ "$dir/tools-emulator/"
     else
-      rmEmu=''
+      extraSed='
+        '"$extraSed"'
+        /^ENV (ANDROID_EMULATOR_PACKAGE|ANDROID_EMULATOR_DEPS)/d;
+        /^COPY tools-emulator/d;
+      '
     fi
     if [ "$type" != "ndk" ]; then
-      rmNdk='/^ENV (ANDROID_NDK_PACKAGES|ANDROID_NDK_HOME)/d;'
-    else
-      rmNdk=''
+      extraSed='
+        '"$extraSed"'
+        /^ENV (ANDROID_NDK_PACKAGES|ANDROID_NDK_HOME)/d;
+      '
     fi
-    mkdir -p "$dir"
     sed -E '
-      '"$rmEmu"'
-      '"$rmNdk"'
+      '"$extraSed"'
       s/%%VARIANT%%/'"$variant"'/;
       s/%%BUILD_TOOLS%%/'"${buildTools[$variant]}"'/;
       s/%%EXTRA_PACKAGES%%/'"${extraPackages[$variant]}"'/;
-' $template > "$dir/Dockerfile"
-    cp -r tools/ "$dir/tools/"
+    ' $template > "$dir/Dockerfile"
   done
 done
