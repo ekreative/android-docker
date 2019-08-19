@@ -6,7 +6,7 @@ RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     expect \
     nano \
-    openjdk-12-jdk \
+    openjdk-8-jdk \
     unzip \
     wget \
   && rm -rf /var/lib/apt/lists/*
