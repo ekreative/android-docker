@@ -5,6 +5,7 @@ MAINTAINER Fred Cox "mcfedr@gmail.com"
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     expect \
+    locales \
     nano \
     # Sticking to jdk8 for the moment
     # Problems with Kapt on JDK>8, https://youtrack.jetbrains.com/issue/KT-28587
@@ -13,6 +14,14 @@ RUN apt-get update \
     unzip \
     wget \
   && rm -rf /var/lib/apt/lists/*
+
+# Seems somethings build better with utf8 locale specified
+# http://jaredmarkell.com/docker-and-locales/
+# https://github.com/square/moshi/issues/804#issuecomment-466926878
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
 
 # Install the SDK
 ENV ANDROID_SDK_URL https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
