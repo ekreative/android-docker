@@ -50,6 +50,7 @@ ENV PATH $ANDROID_SDK_ROOT/tools/bin:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/p
 
 # Install custom tools
 COPY tools/license_accepter /opt/tools/
+COPY tools/adb-all /opt/tools
 ENV PATH /opt/tools:$PATH
 RUN license_accepter
 
