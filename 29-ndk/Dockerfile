@@ -66,7 +66,7 @@ RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_V
 
 
 ##<ndk>##
-ENV ANDROID_NDK_PACKAGES "ndk-bundle" "cmake;3.10.2.4988404" "lldb;3.1"
+ENV ANDROID_NDK_PACKAGES "ndk-bundle" "cmake;3.10.2.4988404" "cmake;3.6.4111459" "lldb;3.1"
 ENV ANDROID_NDK_ROOT $ANDROID_HOME/ndk-bundle
 ENV ANDROID_NDK_HOME $ANDROID_NDK_ROOT
 RUN sdkmanager --verbose $ANDROID_NDK_PACKAGES
