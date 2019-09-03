@@ -71,13 +71,9 @@ RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     # stf-client
     build-essential \
-    # gem specific_install
-    git \
+    gem \
   # Without rake fails to install stf-client
-  && gem install specific_install rake \
-  # && gem install rake stf-client \
-  # https://github.com/Malinskiy/stf-client/pull/10
-  && gem specific_install https://github.com/mcfedr/stf-client.git add-adb-key \
+  && gem install rake stf-client --no-doc \
   && apt-mark auto '.*' > /dev/null \
   && apt-mark manual $savedAptMark > /dev/null \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
