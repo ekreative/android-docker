@@ -107,3 +107,10 @@ ENV ANDROID_NDK_ROOT $ANDROID_HOME/ndk-bundle
 ENV ANDROID_NDK_HOME $ANDROID_NDK_ROOT
 RUN sdkmanager --verbose $ANDROID_NDK_PACKAGES
 ##</ndk>##
+
+# Install Node.js
+RUN apt-get update \
+  && curl -sL https://deb.nodesource.com/setup_13.x | bash - \
+  && apt-get install -y nodejs \
+  && node -v \
+  && npm -v
