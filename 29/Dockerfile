@@ -65,3 +65,22 @@ RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_V
 
 
 
+
+##<node>##
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+    apt-transport-https \
+    curl \
+    gnupg \
+    lsb-release \
+  # For nodejs we use nodesource, its nice and easy and gets us the correct version
+  # Find latest link https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
+  && curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
+  && echo "deb https://deb.nodesource.com/node_12.x $(lsb_release -s -c) main" | tee /etc/apt/sources.list.d/nodesource.list \
+  && echo "deb-src https://deb.nodesource.com/node_12.x $(lsb_release -s -c) main" | tee -a /etc/apt/sources.list.d/nodesource.list \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends \
+    nodejs \
+  && rm -rf /var/lib/apt/lists/*
+RUN npm -g install xcode-build-tools
+##</node>##
