@@ -2,6 +2,17 @@
 
 An image that lets us build android apps with docker using gitlab-ci
 
+## Tags available
+
+* `29`, `latest`
+* `29-emulator`
+* `29-ndk`
+* `29-stf-client`
+* `28`
+* `28-emulator`
+* `28-ndk`
+* `28-stf-client`
+
 ## Build command
 
 ```bash
