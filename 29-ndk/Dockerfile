@@ -1,4 +1,4 @@
-FROM ubuntu:disco
+FROM ubuntu:focal
 
 MAINTAINER Fred Cox "mcfedr@gmail.com"
 
@@ -24,16 +24,17 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
 # Install the SDK
-ENV ANDROID_SDK_URL https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
+ENV ANDROID_CMDLINE_TOOLS https://dl.google.com/android/repository/commandlinetools-linux-6200805_latest.zip
 RUN cd /opt \
-  && wget --output-document=android-sdk.zip --quiet $ANDROID_SDK_URL \
-  && unzip android-sdk.zip -d android-sdk-linux \
-  && rm -f android-sdk.zip \
+  && mkdir android-sdk-linux \
+  && wget --output-document=cmdline-tools.zip --quiet $ANDROID_CMDLINE_TOOLS \
+  && unzip cmdline-tools.zip -d android-sdk-linux/cmdline-tools \
+  && rm -f cmdline-tools.zip \
   && chown -R root:root android-sdk-linux
 
 ENV ANDROID_SDK_ROOT /opt/android-sdk-linux
 ENV ANDROID_HOME $ANDROID_SDK_ROOT
-ENV PATH $ANDROID_SDK_ROOT/tools/bin:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools:$PATH
+ENV PATH $ANDROID_HOME/cmdline-tools/tools/bin:$ANDROID_SDK_ROOT/tools/bin:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools:$PATH
 
 # Libs required for sdkmanager to run using openjdk-12
 # https://stackoverflow.com/a/55982976/859027
@@ -56,9 +57,9 @@ RUN license_accepter
 
 # Install Android platform and things
 ENV ANDROID_PLATFORM_VERSION 29
-ENV ANDROID_BUILD_TOOLS_VERSION 29.0.2
+ENV ANDROID_BUILD_TOOLS_VERSION 29.0.3
 ENV PATH $ANDROID_SDK_ROOT/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH
-ENV ANDROID_EXTRA_PACKAGES "build-tools;29.0.0" "build-tools;29.0.1"
+ENV ANDROID_EXTRA_PACKAGES "build-tools;29.0.0" "build-tools;29.0.1" "build-tools;29.0.2"
 ENV ANDROID_REPOSITORIES "extras;android;m2repository" "extras;google;m2repository"
 ENV ANDROID_CONSTRAINT_PACKAGES "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0"
 RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_VERSION" "build-tools;$ANDROID_BUILD_TOOLS_VERSION" $ANDROID_EXTRA_PACKAGES $ANDROID_REPOSITORIES $ANDROID_CONSTRAINT_PACKAGES
@@ -66,7 +67,7 @@ RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_V
 
 
 ##<ndk>##
-ENV ANDROID_NDK_PACKAGES "ndk-bundle" "cmake;3.10.2.4988404" "cmake;3.6.4111459" "lldb;3.1"
+ENV ANDROID_NDK_PACKAGES "ndk-bundle" "cmake;3.10.2.4988404" "cmake;3.6.4111459"
 ENV ANDROID_NDK_ROOT $ANDROID_HOME/ndk-bundle
 ENV ANDROID_NDK_HOME $ANDROID_NDK_ROOT
 RUN sdkmanager --verbose $ANDROID_NDK_PACKAGES

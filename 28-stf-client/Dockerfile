@@ -1,4 +1,4 @@
-FROM ubuntu:disco
+FROM ubuntu:focal
 
 MAINTAINER Fred Cox "mcfedr@gmail.com"
 
@@ -24,16 +24,17 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
 # Install the SDK
-ENV ANDROID_SDK_URL https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
+ENV ANDROID_CMDLINE_TOOLS https://dl.google.com/android/repository/commandlinetools-linux-6200805_latest.zip
 RUN cd /opt \
-  && wget --output-document=android-sdk.zip --quiet $ANDROID_SDK_URL \
-  && unzip android-sdk.zip -d android-sdk-linux \
-  && rm -f android-sdk.zip \
+  && mkdir android-sdk-linux \
+  && wget --output-document=cmdline-tools.zip --quiet $ANDROID_CMDLINE_TOOLS \
+  && unzip cmdline-tools.zip -d android-sdk-linux/cmdline-tools \
+  && rm -f cmdline-tools.zip \
   && chown -R root:root android-sdk-linux
 
 ENV ANDROID_SDK_ROOT /opt/android-sdk-linux
 ENV ANDROID_HOME $ANDROID_SDK_ROOT
-ENV PATH $ANDROID_SDK_ROOT/tools/bin:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools:$PATH
+ENV PATH $ANDROID_HOME/cmdline-tools/tools/bin:$ANDROID_SDK_ROOT/tools/bin:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools:$PATH
 
 # Libs required for sdkmanager to run using openjdk-12
 # https://stackoverflow.com/a/55982976/859027
