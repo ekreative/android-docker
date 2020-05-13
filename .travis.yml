@@ -1,0 +1,13 @@
+language: shell
+dist: bionic
+
+env:
+  - SHFMT_URL=https://github.com/mvdan/sh/releases/download/v3.1.1/shfmt_v3.1.1_linux_amd64
+
+install:
+  - curl -sSL $SHFMT_URL -o ~/shfmt && chmod +x ~/shfmt
+
+script:
+  - ~/shfmt -d -i 2 update.sh
+  - shellcheck update.sh
+  - ./update.sh && git diff --exit-code
