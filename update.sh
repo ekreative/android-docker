@@ -3,12 +3,12 @@ set -e
 
 declare -A buildTools=(
   ['28']='28.0.3'
-	['29']='29.0.3'
+  ['29']='29.0.3'
 )
 
 declare -A extraPackages=(
-	['28']='"build-tools;28.0.0" "build-tools;28.0.1" "build-tools;28.0.2"'
-	['29']='"build-tools;29.0.0" "build-tools;29.0.1" "build-tools;29.0.2"'
+  ['28']='"build-tools;28.0.0" "build-tools;28.0.1" "build-tools;28.0.2"'
+  ['29']='"build-tools;29.0.0" "build-tools;29.0.1" "build-tools;29.0.2"'
 )
 
 for variant in '28' '29'; do
@@ -49,6 +49,6 @@ for variant in '28' '29'; do
       s/%%VARIANT%%/'"$variant"'/;
       s/%%BUILD_TOOLS%%/'"${buildTools[$variant]}"'/;
       s/%%EXTRA_PACKAGES%%/'"${extraPackages[$variant]}"'/;
-    ' $template > "$dir/Dockerfile"
+    ' $template >"$dir/Dockerfile"
   done
 done
