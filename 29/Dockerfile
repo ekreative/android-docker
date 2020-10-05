@@ -1,5 +1,7 @@
 FROM ubuntu:focal
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
+# hadolint ignore=DL3008
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     expect \
@@ -10,7 +12,7 @@ RUN apt-get update \
     # Also 8 is whats included with Android Studio
     openjdk-8-jdk \
     unzip \
-    wget \
+    curl \
   && rm -rf /var/lib/apt/lists/*
 
 # Seems somethings build better with utf8 locale specified
@@ -24,12 +26,15 @@ ENV LC_ALL en_US.UTF-8
 # Install the SDK
 # https://developer.android.com/studio#downloads
 ENV ANDROID_CMDLINE_TOOLS https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
-RUN cd /opt \
-  && mkdir android-sdk-linux \
-  && wget --output-document=cmdline-tools.zip --quiet $ANDROID_CMDLINE_TOOLS \
-  && unzip cmdline-tools.zip -d android-sdk-linux/cmdline-tools \
-  && rm -f cmdline-tools.zip \
-  && chown -R root:root android-sdk-linux
+# hadolint ignore=DL3003
+RUN ( \
+    cd /opt \
+    && mkdir android-sdk-linux \
+    && curl -sSL -o cmdline-tools.zip "$ANDROID_CMDLINE_TOOLS" \
+    && unzip cmdline-tools.zip -d android-sdk-linux/cmdline-tools \
+    && rm -f cmdline-tools.zip \
+    && chown -R root:root android-sdk-linux \
+  )
 
 ENV ANDROID_SDK_ROOT /opt/android-sdk-linux
 ENV ANDROID_HOME $ANDROID_SDK_ROOT
@@ -67,10 +72,10 @@ RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_V
 
 
 ##<node>##
+# hadolint ignore=DL3008
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
     apt-transport-https \
-    curl \
     gnupg \
     lsb-release \
   # For nodejs we use nodesource, its nice and easy and gets us the correct version
@@ -82,5 +87,7 @@ RUN apt-get update \
   && apt-get install -y --no-install-recommends \
     nodejs \
   && rm -rf /var/lib/apt/lists/*
+
+# hadolint ignore=DL3016
 RUN npm -g install xcode-build-tools
 ##</node>##
