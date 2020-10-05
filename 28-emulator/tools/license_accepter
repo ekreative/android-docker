@@ -16,9 +16,9 @@ check_android_home() {
 
 accept_all_android_licenses() {
   ANDROID_LICENSES="$ANDROID_HOME/licenses"
-  if [ ! -d $ANDROID_LICENSES ]; then
+  if [ ! -d "$ANDROID_LICENSES" ]; then
     echo "Android licenses directory doesn't exist, creating one..."
-    mkdir -p $ANDROID_LICENSES
+    mkdir -p "$ANDROID_LICENSES"
   fi
   accept_license_of android-sdk-license 8933bad161af4178b1185d1a37fbf41ea5269c55
   accept_license_of android-sdk-license d56f5187479451eabf01fb78af6dfcb131a6481e
@@ -31,16 +31,16 @@ accept_license_of() {
   local license=$1
   local content=$2
   local file=$ANDROID_LICENSES/$license
-  if [ -f $file ]; then
-    if grep -q "^$content$" $file; then
+  if [ -f "$file" ]; then
+    if grep -q "^$content$" "$file"; then
       echo "$license: $content has been accepted already"
     else
       echo "Accepting $license: $content ..."
-      echo -e $content >> $file
+      echo -e "$content" >>"$file"
     fi
   else
     echo "Accepting $license: $content ..."
-    echo -e $content > $file
+    echo -e "$content" >"$file"
   fi
 }
 

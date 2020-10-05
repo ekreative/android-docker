@@ -55,10 +55,10 @@ ENV PATH /opt/tools:$PATH
 RUN license_accepter
 
 # Install Android platform and things
-ENV ANDROID_PLATFORM_VERSION %%VARIANT%%
-ENV ANDROID_BUILD_TOOLS_VERSION %%BUILD_TOOLS%%
+ENV ANDROID_PLATFORM_VERSION 30
+ENV ANDROID_BUILD_TOOLS_VERSION 30.0.2
 ENV PATH $ANDROID_SDK_ROOT/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH
-ENV ANDROID_EXTRA_PACKAGES %%EXTRA_PACKAGES%%
+ENV ANDROID_EXTRA_PACKAGES "build-tools;30.0.0" "build-tools;30.0.1"
 ENV ANDROID_REPOSITORIES "extras;android;m2repository" "extras;google;m2repository"
 ENV ANDROID_CONSTRAINT_PACKAGES "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1" "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0"
 RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_VERSION" "build-tools;$ANDROID_BUILD_TOOLS_VERSION" $ANDROID_EXTRA_PACKAGES $ANDROID_REPOSITORIES $ANDROID_CONSTRAINT_PACKAGES
@@ -80,33 +80,7 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 ##</stf-client>##
 
-##<emulator>##
-RUN apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    file \
-    qt5-default \
-    libpulse0 \
-  && rm -rf /var/lib/apt/lists/*
 
-ENV ANDROID_EMULATOR_PACKAGE "system-images;android-$ANDROID_PLATFORM_VERSION;google_apis_playstore;x86_64"
-RUN sdkmanager --verbose "emulator" $ANDROID_EMULATOR_PACKAGE
-
-# Fix for emulator detect 64bit
-ENV SHELL /bin/bash
-# https://www.bram.us/2017/05/12/launching-the-android-emulator-from-the-command-line/
-ENV PATH $ANDROID_SDK_ROOT/emulator:$PATH
-
-COPY tools-emulator/android-avdmanager-create /opt/tools/
-COPY tools-emulator/android-start-emulator /opt/tools/
-COPY tools-emulator/android-wait-for-emulator /opt/tools/
-##</emulator>##
-
-##<ndk>##
-ENV ANDROID_NDK_PACKAGES "ndk-bundle" "cmake;3.10.2.4988404" "cmake;3.6.4111459"
-ENV ANDROID_NDK_ROOT $ANDROID_HOME/ndk-bundle
-ENV ANDROID_NDK_HOME $ANDROID_NDK_ROOT
-RUN sdkmanager --verbose $ANDROID_NDK_PACKAGES
-##</ndk>##
 
 ##<node>##
 RUN apt-get update \

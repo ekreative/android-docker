@@ -22,7 +22,8 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
 # Install the SDK
-ENV ANDROID_CMDLINE_TOOLS https://dl.google.com/android/repository/commandlinetools-linux-6200805_latest.zip
+# https://developer.android.com/studio#downloads
+ENV ANDROID_CMDLINE_TOOLS https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
 RUN cd /opt \
   && mkdir android-sdk-linux \
   && wget --output-document=cmdline-tools.zip --quiet $ANDROID_CMDLINE_TOOLS \

@@ -9,5 +9,13 @@ install:
 
 script:
   - ~/shfmt -d -i 2 update.sh
+  - ~/shfmt -d -i 2 tools/adb-all
+  - ~/shfmt -d -i 2 tools/license_accepter
+  - ~/shfmt -d -i 2 tools-emulator/android-start-emulator
+  - ~/shfmt -d -i 2 tools-emulator/android-wait-for-emulator
   - shellcheck update.sh
+  - shellcheck tools/adb-all
+  - shellcheck tools/license_accepter
+  - shellcheck tools-emulator/android-start-emulator
+  - shellcheck tools-emulator/android-wait-for-emulator
   - ./update.sh && git diff --exit-code

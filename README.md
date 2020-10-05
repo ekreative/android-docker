@@ -4,6 +4,10 @@ An image that lets us build android apps with docker using gitlab-ci
 
 ## Tags available
 
+* `30`, `latest`
+* `30-emulator`
+* `30-ndk`
+* `30-stf-client`
 * `29`, `latest`
 * `29-emulator`
 * `29-ndk`
@@ -17,7 +21,7 @@ An image that lets us build android apps with docker using gitlab-ci
 
 ```bash
 ./update.sh
-docker build -t ekreative/android:latest 29
+docker build -t ekreative/android:latest 30
 ```
 
 ## Build an app

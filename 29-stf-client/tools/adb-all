@@ -10,12 +10,10 @@
 # ./adb-all install apidemo.apk
 # ./adb-all uninstall com.example.android.apis
 
-adb devices | while read line
-do
-    if [ ! "$line" = "" ] && [ `echo $line | awk '{print $2}'` = "device" ]
-    then
-        device=`echo $line | awk '{print $1}'`
-        echo "$device $@ ..."
-        adb -s $device $@
-    fi
+adb devices | while read -r line; do
+  if [ ! "$line" = "" ] && [ "$(echo "$line" | awk '{print $2}')" = "device" ]; then
+    device=$(echo "$line" | awk '{print $1}')
+    echo "$device $* ..."
+    adb -s "$device" "$@"
+  fi
 done
