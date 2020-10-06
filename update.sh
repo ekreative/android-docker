@@ -1,16 +1,14 @@
 #!/usr/bin/env bash
 set -e
 
-variants=('28' '29' '30')
+variants=('29' '30')
 
 declare -A buildTools=(
-  ['28']='28.0.3'
   ['29']='29.0.3'
   ['30']='30.0.2'
 )
 
 declare -A extraPackages=(
-  ['28']='"build-tools;28.0.0" "build-tools;28.0.1" "build-tools;28.0.2"'
   ['29']='"build-tools;29.0.0" "build-tools;29.0.1" "build-tools;29.0.2"'
   ['30']='"build-tools;30.0.0" "build-tools;30.0.1"'
 )
