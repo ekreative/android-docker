@@ -1,12 +1,10 @@
 language: shell
-dist: bionic
+dist: focal
 
 env:
-  SHFMT: "${HOME}/shfmt"
   HADOLINT: "${HOME}/hadolint"
 
 install:
-  - curl -sL -o "$SHFMT" "https://github.com/mvdan/sh/releases/download/v3.1.1/shfmt_v3.1.1_linux_amd64" && chmod +x "$SHFMT"
   - curl -sL -o "$HADOLINT" "https://github.com/hadolint/hadolint/releases/download/v1.17.6/hadolint-$(uname -s)-$(uname -m)" && chmod +x "$HADOLINT"
 
 script:
@@ -15,10 +13,10 @@ script:
   - shellcheck tools/license_accepter
   - shellcheck tools-emulator/android-start-emulator
   - shellcheck tools-emulator/android-wait-for-emulator
-  - $SHFMT -d -i 2 update.sh
-  - $SHFMT -d -i 2 tools/adb-all
-  - $SHFMT -d -i 2 tools/license_accepter
-  - $SHFMT -d -i 2 tools-emulator/android-start-emulator
-  - $SHFMT -d -i 2 tools-emulator/android-wait-for-emulator
+  - shfmt -d -i 2 update.sh
+  - shfmt -d -i 2 tools/adb-all
+  - shfmt -d -i 2 tools/license_accepter
+  - shfmt -d -i 2 tools-emulator/android-start-emulator
+  - shfmt -d -i 2 tools-emulator/android-wait-for-emulator
   - $HADOLINT */Dockerfile
   - ./update.sh && git diff --exit-code
