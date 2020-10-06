@@ -2,7 +2,7 @@ language: shell
 dist: bionic
 
 env:
-  SHFMT: "${HOME}/hadolint"
+  SHFMT: "${HOME}/shfmt"
   HADOLINT: "${HOME}/hadolint"
 
 install:
