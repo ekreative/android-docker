@@ -23,6 +23,27 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
+##<node>##
+# hadolint ignore=DL3008
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+    apt-transport-https \
+    gnupg \
+    lsb-release \
+  # For nodejs we use nodesource, its nice and easy and gets us the correct version
+  # Find latest link https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
+  && curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
+  && echo "deb https://deb.nodesource.com/node_12.x $(lsb_release -s -c) main" | tee /etc/apt/sources.list.d/nodesource.list \
+  && echo "deb-src https://deb.nodesource.com/node_12.x $(lsb_release -s -c) main" | tee -a /etc/apt/sources.list.d/nodesource.list \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends \
+    nodejs \
+  && rm -rf /var/lib/apt/lists/*
+
+# hadolint ignore=DL3016
+RUN npm -g install xcode-build-tools
+##</node>##
+
 # Install the SDK
 # https://developer.android.com/studio#downloads
 ENV ANDROID_CMDLINE_TOOLS https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
@@ -76,24 +97,3 @@ ENV ANDROID_NDK_ROOT $ANDROID_HOME/ndk-bundle
 ENV ANDROID_NDK_HOME $ANDROID_NDK_ROOT
 RUN sdkmanager --verbose $ANDROID_NDK_PACKAGES
 ##</ndk>##
-
-##<node>##
-# hadolint ignore=DL3008
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends \
-    apt-transport-https \
-    gnupg \
-    lsb-release \
-  # For nodejs we use nodesource, its nice and easy and gets us the correct version
-  # Find latest link https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
-  && curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
-  && echo "deb https://deb.nodesource.com/node_12.x $(lsb_release -s -c) main" | tee /etc/apt/sources.list.d/nodesource.list \
-  && echo "deb-src https://deb.nodesource.com/node_12.x $(lsb_release -s -c) main" | tee -a /etc/apt/sources.list.d/nodesource.list \
-  && apt-get update \
-  && apt-get install -y --no-install-recommends \
-    nodejs \
-  && rm -rf /var/lib/apt/lists/*
-
-# hadolint ignore=DL3016
-RUN npm -g install xcode-build-tools
-##</node>##
