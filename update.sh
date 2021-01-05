@@ -14,7 +14,7 @@ declare -A extraPackages=(
 )
 
 for variant in "${variants[@]}"; do
-  for type in 'default' 'emulator' 'ndk' 'stf-client'; do
+  for type in 'default' 'emulator' 'ndk' 'stf-client' 'jdk14'; do
     template="Dockerfile.template"
     if [ "$type" != "default" ]; then
       dir="$variant-$type"
@@ -46,11 +46,17 @@ for variant in "${variants[@]}"; do
         /##<stf-client>##/,/##<\/stf-client>##/d;
       '
     fi
+	if [ "$type" = "jdk14" ]; then
+		jdkVersion="14"
+	else
+		jdkVersion="8"
+	fi
     sed -E '
       '"$extraSed"'
       s/%%VARIANT%%/'"$variant"'/;
       s/%%BUILD_TOOLS%%/'"${buildTools[$variant]}"'/;
       s/%%EXTRA_PACKAGES%%/'"${extraPackages[$variant]}"'/;
+	  s/%%JDK_VERSION%%/'"$jdkVersion"'/;
     ' $template >"$dir/Dockerfile"
   done
 done

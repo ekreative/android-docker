@@ -8,10 +8,15 @@ An image that lets us build android apps with docker using gitlab-ci
 * `30-emulator`
 * `30-ndk`
 * `30-stf-client`
+* `30-jdk14`
 * `29`, `latest`
 * `29-emulator`
 * `29-ndk`
 * `29-stf-client`
+* `29-jdk14`
+
+## Unmaintained tags
+
 * `28`
 * `28-emulator`
 * `28-ndk`

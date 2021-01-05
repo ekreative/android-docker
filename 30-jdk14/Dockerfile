@@ -7,7 +7,7 @@ RUN apt-get update \
     expect \
     locales \
     nano \
-    openjdk-8-jdk \
+    openjdk-14-jdk \
     unzip \
     curl \
   && rm -rf /var/lib/apt/lists/*
