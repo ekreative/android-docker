@@ -10,6 +10,7 @@ RUN apt-get update \
     openjdk-8-jdk \
     unzip \
     curl \
+    xz-utils \
   && rm -rf /var/lib/apt/lists/*
 
 # Seems somethings build better with utf8 locale specified
