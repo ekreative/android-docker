@@ -46,11 +46,11 @@ for variant in "${variants[@]}"; do
         /##<stf-client>##/,/##<\/stf-client>##/d;
       '
     fi
-	if [ "$type" = "jdk14" ]; then
-		jdkVersion="14"
-	else
-		jdkVersion="8"
-	fi
+    if [ "$type" = "jdk14" ]; then
+      jdkVersion="14"
+    else
+      jdkVersion="8"
+    fi
     sed -E '
       '"$extraSed"'
       s/%%VARIANT%%/'"$variant"'/;
