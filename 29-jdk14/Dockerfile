@@ -11,6 +11,7 @@ RUN apt-get update \
     unzip \
     curl \
     xz-utils \
+    git \
   && rm -rf /var/lib/apt/lists/*
 
 # Seems somethings build better with utf8 locale specified
