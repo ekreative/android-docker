@@ -41,6 +41,7 @@ RUN apt-get update \
 
 # hadolint ignore=DL3016
 RUN npm -g install xcode-build-tools
+RUN npm -g install yarn
 ##</node>##
 
 # Install the SDK
