@@ -39,6 +39,7 @@ RUN apt-get update \
     nodejs \
   && rm -rf /var/lib/apt/lists/*
 
+RUN npm -g install yarn
 # hadolint ignore=DL3016
 RUN npm -g install xcode-build-tools
 ##</node>##
