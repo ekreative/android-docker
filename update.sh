@@ -60,7 +60,7 @@ for variant in "${variants[@]}"; do
       if [ "$type" = "jdk14" ]; then
         jdkVersion="14"
       else
-        jdkVersion="8"
+        jdkVersion="11"
       fi
       sed -E '
         '"$extraSed"'
