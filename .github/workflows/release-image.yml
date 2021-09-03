@@ -1,0 +1,111 @@
+name: Create and publish a Docker image
+
+# Cache setup: https://github.com/docker/build-push-action/blob/master/docs/advanced/cache.md
+# Multi push: https://github.com/docker/build-push-action/blob/master/docs/advanced/push-multi-registries.md
+
+on:
+  push:
+    branches: ['*']
+
+jobs:
+  checks-update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Check update has been run
+        run: |
+          ./update.sh
+          git diff --quiet
+
+  checks-hadolint:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    container: hadolint/hadolint:latest-debian
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Check hadolint
+        run: |
+          hadolint */Dockerfile
+
+  checks-shfmt:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    container: mvdan/shfmt:v3.3.0-alpine
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Check shfmt
+        run: |
+          shfmt -i 2 -ci -d update.sh
+          shfmt -i 2 -ci -d tools/adb-all
+          shfmt -i 2 -ci -d tools/license_accepter
+          shfmt -i 2 -ci -d tools-emulator/android-start-emulator
+          shfmt -i 2 -ci -d tools-emulator/android-wait-for-emulator
+
+  checks-shellcheck:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    container: koalaman/shellcheck-alpine:latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Check shellcheck
+        run: |
+          shellcheck update.sh
+          shellcheck tools/adb-all
+          shellcheck tools/license_accepter
+          shellcheck tools-emulator/android-start-emulator
+          shellcheck tools-emulator/android-wait-for-emulator
+
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        version: [ '29', '30', '31' ]
+        variant: [ '', '-emulator', '-ndk', '-stf-client' ]
+    needs: [checks-hadolint, checks-shfmt, checks-shellcheck, checks-update]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to Docker Hub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ekreative/android
+          tags: |
+            type=raw,value=${{ matrix.version }}${{ matrix.variant }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: ${{ matrix.version }}${{ matrix.variant }}
+          push: ${{ github.ref == 'refs/heads/master' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
