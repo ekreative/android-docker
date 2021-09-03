@@ -9,7 +9,7 @@ fail_counter=0
 timeout_in_sec=60
 
 until [[ "$boot_anim" =~ "stopped" ]]; do
-  boot_anim=$(adb -e shell getprop init.svc.boot_anim 2>&1 &)
+  boot_anim=$(adb -e shell getprop init.svc.bootanim 2>&1 &)
   ((fail_counter += 1))
   echo "Waiting for emulator to start ($boot_anim)"
   if [[ $fail_counter -gt timeout_in_sec ]]; then
