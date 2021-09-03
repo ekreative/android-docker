@@ -95,5 +95,6 @@ ENV PATH=$ANDROID_SDK_ROOT/emulator:$PATH
 
 COPY tools-emulator/android-start-emulator /opt/tools/
 COPY tools-emulator/android-wait-for-emulator /opt/tools/
+RUN adb keygen ~/.android/adbkey
 ##</emulator>##
 

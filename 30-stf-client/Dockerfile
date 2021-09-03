@@ -90,7 +90,9 @@ RUN apt-get update \
   && apt-mark auto '.*' > /dev/null \
   && apt-mark manual $savedAptMark > /dev/null \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
-  && rm -rf /var/lib/apt/lists/*
+  && rm -rf /var/lib/apt/lists/* \
+
+RUN adb keygen ~/.android/adbkey
 ##</stf-client>##
 
 
