@@ -11,13 +11,13 @@ default_jdk_variant='11'
 
 declare -A buildTools=(
   ['29']='29.0.3'
-  ['30']='30.0.2'
+  ['30']='30.0.3'
   ['31']='31.0.0'
 )
 
 declare -A extraPackages=(
   ['29']='"build-tools;29.0.0 build-tools;29.0.1 build-tools;29.0.2"'
-  ['30']='"build-tools;30.0.0 build-tools;30.0.1"'
+  ['30']='"build-tools;30.0.0 build-tools;30.0.1 build-tools;30.0.2"'
   ['31']=''
 )
 
