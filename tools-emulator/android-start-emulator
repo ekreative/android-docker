@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 
-avdmanager create avd --package "$ANDROID_EMULATOR_PACKAGE" --name "${AVD_NAME:-test}" --abi "google_apis_playstore/x86_64" --device "${AVD_DEVICE:-pixel}" --force
+# shellcheck disable=SC2086
+avdmanager create avd --package "$ANDROID_EMULATOR_PACKAGE" --name "${AVD_NAME:-test}" --abi "google_apis_playstore/x86_64" --device "${AVD_DEVICE:-pixel}" --force ${AVD_ARGS:-}
 # shellcheck disable=SC2086
 emulator -avd "${AVD_NAME:-test}" -no-audio -no-boot-anim -no-window -accel on -gpu off ${EMULATOR_ARGS:-} &
 android-wait-for-emulator
