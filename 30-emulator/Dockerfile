@@ -98,3 +98,4 @@ COPY tools-emulator/android-wait-for-emulator /opt/tools/
 RUN adb keygen ~/.android/adbkey
 ##</emulator>##
 
+

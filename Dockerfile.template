@@ -123,3 +123,18 @@ ENV ANDROID_NDK_ROOT=$ANDROID_HOME/ndk-bundle
 ENV ANDROID_NDK_HOME=$ANDROID_NDK_ROOT
 RUN sdkmanager --verbose $ANDROID_NDK_PACKAGES
 ##</ndk>##
+
+##<ruby-bundler>##
+RUN apt-get update \
+&& apt-get -y install imagemagick \
+&& apt-get install -y build-essential wget \
+&& wget --no-check-certificate -O ruby-install.tar.gz https://github.com/postmodern/ruby-install/archive/master.tar.gz \
+&& tar -xzvf ruby-install.tar.gz \
+&& cd ruby-install-master && make install \
+&& cd \
+&& rm -rf ruby-install-master && rm -rf ruby-install.tar.gz \
+&& ruby-install --latest \
+&& ruby-install -i /usr/local/ ruby 2.6.8 -- --disable-install-doc \
+&& gem update --system --no-document \
+&& gem install bundler:1.17.3 --force
+##</ruby-bundler>##
