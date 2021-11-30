@@ -80,12 +80,16 @@ RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_V
 
 ##<ruby-bundler>##
 RUN apt-get update \
-&& apt-get -y install imagemagick \
-&& apt-get install -y build-essential wget \
-&& wget --no-check-certificate -O ruby-install.tar.gz https://github.com/postmodern/ruby-install/archive/master.tar.gz \
-&& tar -xzvf ruby-install.tar.gz \
-&& cd ruby-install-master && make install \
-&& cd \
+&& apt-get -y --no-install-recommends install imagemagick=8:6.9.10.23+dfsg-2.1ubuntu11 \
+&& rm -rf /var/lib/apt/lists/* \
+&& curl -k -0L https://github.com/postmodern/ruby-install/archive/master.tar.gz -o ruby-install.tar.gz \
+&& tar -xzvf ruby-install.tar.gz
+WORKDIR /ruby-install-master
+RUN apt-get update && apt-get -y --no-install-recommends install make=4.2.1-1.2 \
+&& rm -rf /var/lib/apt/lists/* \
+&& make install
+WORKDIR /
+RUN apt-get update \
 && rm -rf ruby-install-master && rm -rf ruby-install.tar.gz \
 && ruby-install --latest \
 && ruby-install -i /usr/local/ ruby 2.6.8 -- --disable-install-doc \
