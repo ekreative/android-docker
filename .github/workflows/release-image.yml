@@ -106,7 +106,7 @@ jobs:
         with:
           images: |
             ekreative/android
-            europe-west1-docker.pkg.dev/ekreative-internal/android
+            europe-west1-docker.pkg.dev/ekreative-internal/ci/android
           tags: |
             type=raw,value=${{ matrix.version }}${{ matrix.variant }}
           flavor: |
