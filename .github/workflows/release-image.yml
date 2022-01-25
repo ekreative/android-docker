@@ -92,11 +92,11 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      - name: Login to GCR
+      - name: Login to GAR
         if: github.ref == 'refs/heads/master'
         uses: docker/login-action@v1
         with:
-          registry: eu.gcr.io
+          registry: europe-west1-docker.pkg.dev
           username: _json_key
           password: ${{ secrets.GCR_JSON_KEY }}
 
