@@ -45,7 +45,7 @@ RUN npm -g install xcode-build-tools yarn
 
 # Install the SDK
 # https://developer.android.com/studio#downloads
-ENV ANDROID_CMDLINE_TOOLS=https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
+ENV ANDROID_CMDLINE_TOOLS=https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
 # hadolint ignore=DL3003
 RUN ( \
     cd /opt \
