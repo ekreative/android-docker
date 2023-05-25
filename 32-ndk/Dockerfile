@@ -58,7 +58,7 @@ RUN ( \
 
 ENV ANDROID_SDK_ROOT=/opt/android-sdk-linux
 ENV ANDROID_HOME=$ANDROID_SDK_ROOT
-ENV PATH=$ANDROID_HOME/cmdline-tools/tools/bin:$ANDROID_SDK_ROOT/tools/bin:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools:$PATH
+ENV PATH=$ANDROID_HOME/cmdline-tools/cmdline-tools/bin:$ANDROID_HOME/cmdline-tools/tools/bin:$ANDROID_SDK_ROOT/tools/bin:$ANDROID_SDK_ROOT/tools:$ANDROID_SDK_ROOT/platform-tools:$PATH
 
 # Install custom tools
 COPY tools/license_accepter /opt/tools/
