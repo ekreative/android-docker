@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-variants=('29' '30' '31')
+variants=('30' '31' '32' '33')
 
 node_variants=('14')
 default_node_variant='14'
@@ -10,15 +10,17 @@ jdk_variants=('11')
 default_jdk_variant='11'
 
 declare -A buildTools=(
-  ['29']='29.0.3'
   ['30']='30.0.3'
   ['31']='31.0.0'
+  ['32']='32.0.0'
+  ['33']='33.0.0'
 )
 
 declare -A extraPackages=(
-  ['29']='"build-tools;29.0.0 build-tools;29.0.1 build-tools;29.0.2"'
   ['30']='"build-tools;30.0.0 build-tools;30.0.1 build-tools;30.0.2"'
-  ['31']=''
+  ['31']='"build-tools;31.0.0"'
+  ['32']='"build-tools;32.0.0"'
+  ['33']='"build-tools;33.0.0 build-tools;33.0.1 build-tools;33.0.2"'
 )
 
 for variant in "${variants[@]}"; do

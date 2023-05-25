@@ -67,20 +67,14 @@ ENV PATH=/opt/tools:$PATH
 RUN license_accepter
 
 # Install Android platform and things
-ENV ANDROID_PLATFORM_VERSION=29
-ENV ANDROID_BUILD_TOOLS_VERSION=29.0.3
+ENV ANDROID_PLATFORM_VERSION=33
+ENV ANDROID_BUILD_TOOLS_VERSION=33.0.0
 ENV PATH=$ANDROID_SDK_ROOT/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH
-ENV ANDROID_EXTRA_PACKAGES="build-tools;29.0.0 build-tools;29.0.1 build-tools;29.0.2"
+ENV ANDROID_EXTRA_PACKAGES="build-tools;33.0.0 build-tools;33.0.1 build-tools;33.0.2"
 ENV ANDROID_REPOSITORIES="extras;android;m2repository extras;google;m2repository"
 ENV ANDROID_CONSTRAINT_PACKAGES="extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2 extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1 extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0"
 RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_VERSION" "build-tools;$ANDROID_BUILD_TOOLS_VERSION" $ANDROID_EXTRA_PACKAGES $ANDROID_REPOSITORIES $ANDROID_CONSTRAINT_PACKAGES
 
 
 
-##<ndk>##
-ENV ANDROID_NDK_PACKAGES="ndk-bundle cmake;3.10.2.4988404 cmake;3.6.4111459"
-ENV ANDROID_NDK_ROOT=$ANDROID_HOME/ndk-bundle
-ENV ANDROID_NDK_HOME=$ANDROID_NDK_ROOT
-RUN sdkmanager --verbose $ANDROID_NDK_PACKAGES
-##</ndk>##
 

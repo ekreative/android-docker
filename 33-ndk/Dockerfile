@@ -67,32 +67,20 @@ ENV PATH=/opt/tools:$PATH
 RUN license_accepter
 
 # Install Android platform and things
-ENV ANDROID_PLATFORM_VERSION=31
-ENV ANDROID_BUILD_TOOLS_VERSION=31.0.0
+ENV ANDROID_PLATFORM_VERSION=33
+ENV ANDROID_BUILD_TOOLS_VERSION=33.0.0
 ENV PATH=$ANDROID_SDK_ROOT/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH
-ENV ANDROID_EXTRA_PACKAGES="build-tools;31.0.0"
+ENV ANDROID_EXTRA_PACKAGES="build-tools;33.0.0 build-tools;33.0.1 build-tools;33.0.2"
 ENV ANDROID_REPOSITORIES="extras;android;m2repository extras;google;m2repository"
 ENV ANDROID_CONSTRAINT_PACKAGES="extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2 extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1 extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0"
 RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_VERSION" "build-tools;$ANDROID_BUILD_TOOLS_VERSION" $ANDROID_EXTRA_PACKAGES $ANDROID_REPOSITORIES $ANDROID_CONSTRAINT_PACKAGES
 
 
 
+##<ndk>##
+ENV ANDROID_NDK_PACKAGES="ndk-bundle cmake;3.10.2.4988404 cmake;3.6.4111459 cmake;3.18.1"
+ENV ANDROID_NDK_ROOT=$ANDROID_HOME/ndk-bundle
+ENV ANDROID_NDK_HOME=$ANDROID_NDK_ROOT
+RUN sdkmanager --verbose $ANDROID_NDK_PACKAGES
+##</ndk>##
 
-##<ruby-bundler>##
-RUN apt-get update \
-&& apt-get -y --no-install-recommends install imagemagick=8:6.9.10.23+dfsg-2.1ubuntu11 \
-&& rm -rf /var/lib/apt/lists/* \
-&& curl -k -0L https://github.com/postmodern/ruby-install/archive/master.tar.gz -o ruby-install.tar.gz \
-&& tar -xzvf ruby-install.tar.gz
-WORKDIR /ruby-install-master
-RUN apt-get update && apt-get -y --no-install-recommends install make=4.2.1-1.2 \
-&& rm -rf /var/lib/apt/lists/* \
-&& make install
-WORKDIR /
-RUN apt-get update \
-&& rm -rf ruby-install-master && rm -rf ruby-install.tar.gz \
-&& ruby-install --latest \
-&& ruby-install -i /usr/local/ ruby 2.6.8 -- --disable-install-doc \
-&& gem update --system --no-document \
-&& gem install bundler:1.17.3 --force
-##</ruby-bundler>##

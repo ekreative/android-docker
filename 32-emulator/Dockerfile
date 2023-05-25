@@ -67,32 +67,35 @@ ENV PATH=/opt/tools:$PATH
 RUN license_accepter
 
 # Install Android platform and things
-ENV ANDROID_PLATFORM_VERSION=31
-ENV ANDROID_BUILD_TOOLS_VERSION=31.0.0
+ENV ANDROID_PLATFORM_VERSION=32
+ENV ANDROID_BUILD_TOOLS_VERSION=32.0.0
 ENV PATH=$ANDROID_SDK_ROOT/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH
-ENV ANDROID_EXTRA_PACKAGES="build-tools;31.0.0"
+ENV ANDROID_EXTRA_PACKAGES="build-tools;32.0.0"
 ENV ANDROID_REPOSITORIES="extras;android;m2repository extras;google;m2repository"
 ENV ANDROID_CONSTRAINT_PACKAGES="extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2 extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1 extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0"
 RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_VERSION" "build-tools;$ANDROID_BUILD_TOOLS_VERSION" $ANDROID_EXTRA_PACKAGES $ANDROID_REPOSITORIES $ANDROID_CONSTRAINT_PACKAGES
 
 
+##<emulator>##
+# hadolint ignore=DL3008
+RUN apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    file \
+    qt5-default \
+    libpulse0 \
+  && rm -rf /var/lib/apt/lists/*
+
+ENV ANDROID_EMULATOR_PACKAGE="system-images;android-$ANDROID_PLATFORM_VERSION;google_apis_playstore;x86_64"
+RUN sdkmanager --verbose "emulator" $ANDROID_EMULATOR_PACKAGE
+
+# Fix for emulator detect 64bit
+ENV SHELL=/bin/bash
+# https://www.bram.us/2017/05/12/launching-the-android-emulator-from-the-command-line/
+ENV PATH=$ANDROID_SDK_ROOT/emulator:$PATH
+
+COPY tools-emulator/android-start-emulator /opt/tools/
+COPY tools-emulator/android-wait-for-emulator /opt/tools/
+RUN adb keygen ~/.android/adbkey
+##</emulator>##
 
 
-##<ruby-bundler>##
-RUN apt-get update \
-&& apt-get -y --no-install-recommends install imagemagick=8:6.9.10.23+dfsg-2.1ubuntu11 \
-&& rm -rf /var/lib/apt/lists/* \
-&& curl -k -0L https://github.com/postmodern/ruby-install/archive/master.tar.gz -o ruby-install.tar.gz \
-&& tar -xzvf ruby-install.tar.gz
-WORKDIR /ruby-install-master
-RUN apt-get update && apt-get -y --no-install-recommends install make=4.2.1-1.2 \
-&& rm -rf /var/lib/apt/lists/* \
-&& make install
-WORKDIR /
-RUN apt-get update \
-&& rm -rf ruby-install-master && rm -rf ruby-install.tar.gz \
-&& ruby-install --latest \
-&& ruby-install -i /usr/local/ ruby 2.6.8 -- --disable-install-doc \
-&& gem update --system --no-document \
-&& gem install bundler:1.17.3 --force
-##</ruby-bundler>##

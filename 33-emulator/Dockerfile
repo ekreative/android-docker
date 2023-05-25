@@ -67,14 +67,35 @@ ENV PATH=/opt/tools:$PATH
 RUN license_accepter
 
 # Install Android platform and things
-ENV ANDROID_PLATFORM_VERSION=29
-ENV ANDROID_BUILD_TOOLS_VERSION=29.0.3
+ENV ANDROID_PLATFORM_VERSION=33
+ENV ANDROID_BUILD_TOOLS_VERSION=33.0.0
 ENV PATH=$ANDROID_SDK_ROOT/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH
-ENV ANDROID_EXTRA_PACKAGES="build-tools;29.0.0 build-tools;29.0.1 build-tools;29.0.2"
+ENV ANDROID_EXTRA_PACKAGES="build-tools;33.0.0 build-tools;33.0.1 build-tools;33.0.2"
 ENV ANDROID_REPOSITORIES="extras;android;m2repository extras;google;m2repository"
 ENV ANDROID_CONSTRAINT_PACKAGES="extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2 extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1 extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0"
 RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_VERSION" "build-tools;$ANDROID_BUILD_TOOLS_VERSION" $ANDROID_EXTRA_PACKAGES $ANDROID_REPOSITORIES $ANDROID_CONSTRAINT_PACKAGES
 
 
+##<emulator>##
+# hadolint ignore=DL3008
+RUN apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    file \
+    qt5-default \
+    libpulse0 \
+  && rm -rf /var/lib/apt/lists/*
+
+ENV ANDROID_EMULATOR_PACKAGE="system-images;android-$ANDROID_PLATFORM_VERSION;google_apis_playstore;x86_64"
+RUN sdkmanager --verbose "emulator" $ANDROID_EMULATOR_PACKAGE
+
+# Fix for emulator detect 64bit
+ENV SHELL=/bin/bash
+# https://www.bram.us/2017/05/12/launching-the-android-emulator-from-the-command-line/
+ENV PATH=$ANDROID_SDK_ROOT/emulator:$PATH
+
+COPY tools-emulator/android-start-emulator /opt/tools/
+COPY tools-emulator/android-wait-for-emulator /opt/tools/
+RUN adb keygen ~/.android/adbkey
+##</emulator>##
 
 

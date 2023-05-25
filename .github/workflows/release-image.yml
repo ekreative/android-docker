@@ -75,7 +75,7 @@ jobs:
       packages: write
     strategy:
       matrix:
-        version: [ '29', '30', '31' ]
+        version: [ '30', '31', '32', '33' ]
         variant: [ '', '-emulator', '-ndk', '-stf-client', '-ruby-bundler' ]
     needs: [checks-hadolint, checks-shfmt, checks-shellcheck, checks-update]
     steps:
