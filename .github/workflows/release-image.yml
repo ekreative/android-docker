@@ -76,7 +76,7 @@ jobs:
     strategy:
       matrix:
         version: [ '30', '31', '32', '33' ]
-        variant: [ '', '-emulator', '-ndk', '-stf-client', '-ruby-bundler' ]
+        variant: [ '', '-emulator', '-ndk', '-stf-client' ]
     needs: [checks-hadolint, checks-shfmt, checks-shellcheck, checks-update]
     steps:
       - name: Checkout repository

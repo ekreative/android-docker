@@ -26,7 +26,7 @@ declare -A extraPackages=(
 for variant in "${variants[@]}"; do
   for node_variant in "${node_variants[@]}"; do
     for jdk_variant in "${jdk_variants[@]}"; do
-      for type in 'default' 'emulator' 'ndk' 'stf-client' 'ruby-bundler'; do
+      for type in 'default' 'emulator' 'ndk' 'stf-client'; do
         template="Dockerfile.template"
         if [ "$type" != "default" ]; then
           dir="$variant-$type"
@@ -76,12 +76,6 @@ for variant in "${variants[@]}"; do
           extraSed='
             '"$extraSed"'
             /##<stf-client>##/,/##<\/stf-client>##/d;
-          '
-        fi
-        if [ "$type" != "ruby-bundler" ]; then
-          extraSed='
-            '"$extraSed"'
-            /##<ruby-bundler>##/,/##<\/ruby-bundler>##/d;
           '
         fi
         sed -E '

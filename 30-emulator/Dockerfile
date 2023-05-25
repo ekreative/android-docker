@@ -99,3 +99,21 @@ RUN adb keygen ~/.android/adbkey
 ##</emulator>##
 
 
+##<ruby-bundler>##
+RUN apt-get update \
+&& apt-get -y --no-install-recommends install imagemagick=8:6.9.10.23+dfsg-2.1ubuntu11 \
+&& rm -rf /var/lib/apt/lists/* \
+&& curl -k -0L https://github.com/postmodern/ruby-install/archive/master.tar.gz -o ruby-install.tar.gz \
+&& tar -xzvf ruby-install.tar.gz
+WORKDIR /ruby-install-master
+RUN apt-get update && apt-get -y --no-install-recommends install make=4.2.1-1.2 \
+&& rm -rf /var/lib/apt/lists/* \
+&& make install
+WORKDIR /
+RUN apt-get update \
+&& rm -rf ruby-install-master && rm -rf ruby-install.tar.gz \
+&& ruby-install --latest \
+&& ruby-install -i /usr/local/ ruby 2.6.8 -- --disable-install-doc \
+&& gem update --system --no-document \
+&& gem install bundler:1.17.3 --force
+##</ruby-bundler>##
