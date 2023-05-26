@@ -3,20 +3,26 @@ set -e
 
 variants=('30' '31' '32' '33')
 
-node_variants=('14')
-default_node_variant='14'
+## Disabled creating extra node variants, rather just having a default for each SDK
+#node_variants=('14' '18')
+declare  -A default_node_variants=(
+  ['30']='14'
+  ['31']='14'
+  ['32']='18'
+  ['33']='18'
+)
 
 jdk_variants=('11')
 default_jdk_variant='11'
 
-declare -A buildTools=(
+declare -A build_tools=(
   ['30']='30.0.3'
   ['31']='31.0.0'
   ['32']='32.0.0'
   ['33']='33.0.0'
 )
 
-declare -A extraPackages=(
+declare -A extra_packages=(
   ['30']='"build-tools;30.0.0 build-tools;30.0.1 build-tools;30.0.2"'
   ['31']='"build-tools;31.0.0"'
   ['32']='"build-tools;32.0.0"'
@@ -24,10 +30,12 @@ declare -A extraPackages=(
 )
 
 for variant in "${variants[@]}"; do
-  for node_variant in "${node_variants[@]}"; do
+#  for node_variant in "${node_variants[@]}"; do
     for jdk_variant in "${jdk_variants[@]}"; do
       for type in 'default' 'emulator' 'ndk' 'stf-client'; do
         template="Dockerfile.template"
+        default_node_variant="${default_node_variants[$variant]}"
+        node_variant="$default_node_variant"
         if [ "$type" != "default" ]; then
           dir="$variant-$type"
           if [ "$node_variant" != "$default_node_variant" ]; then
@@ -57,36 +65,36 @@ for variant in "${variants[@]}"; do
         mkdir -p "$dir"
         cp -r tools/ "$dir/tools/"
 
-        extraSed=''
+        extra_sed=''
         if [ "$type" = "emulator" ]; then
           cp -r tools-emulator/ "$dir/tools-emulator/"
         else
-          extraSed='
-            '"$extraSed"'
+          extra_sed='
+            '"$extra_sed"'
             /##<emulator>##/,/##<\/emulator>##/d;
           '
         fi
         if [ "$type" != "ndk" ]; then
-          extraSed='
-            '"$extraSed"'
+          extra_sed='
+            '"$extra_sed"'
             /##<ndk>##/,/##<\/ndk>##/d;
           '
         fi
         if [ "$type" != "stf-client" ]; then
-          extraSed='
-            '"$extraSed"'
+          extra_sed='
+            '"$extra_sed"'
             /##<stf-client>##/,/##<\/stf-client>##/d;
           '
         fi
         sed -E '
-          '"$extraSed"'
+          '"$extra_sed"'
           s/%%VARIANT%%/'"$variant"'/;
           s/%%NODE_VARIANT%%/'"$node_variant"'/;
-          s/%%BUILD_TOOLS%%/'"${buildTools[$variant]}"'/;
-          s/%%EXTRA_PACKAGES%%/'"${extraPackages[$variant]}"'/;
+          s/%%BUILD_TOOLS%%/'"${build_tools[$variant]}"'/;
+          s/%%EXTRA_PACKAGES%%/'"${extra_packages[$variant]}"'/;
           s/%%JDK_VERSION%%/'"$jdk_variant"'/;
         ' $template >"$dir/Dockerfile"
       done
     done
-  done
+#  done
 done
