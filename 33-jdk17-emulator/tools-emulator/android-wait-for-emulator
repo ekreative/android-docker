@@ -1,0 +1,30 @@
+#!/bin/bash
+set -e
+# Originally written by Ralf Kistner <ralf@embarkmobile.com>, but placed in the public domain
+
+sleep_time=5
+timeout_in_sec=60
+
+fail_counter=0
+until [[ "$(adb -e shell getprop init.svc.bootanim)" =~ "stopped" ]]; do
+  ((fail_counter += sleep_time))
+  echo "Waiting for emulator to start (bootanim)"
+  if [[ $fail_counter -gt timeout_in_sec ]]; then
+    echo "Timeout ($timeout_in_sec seconds) reached; failed to start emulator"
+    exit 1
+  fi
+  sleep $sleep_time
+done
+
+fail_counter=0
+until [[ "$(adb -e shell getprop sys.boot_completed)" == "1" ]]; do
+  ((fail_counter += sleep_time))
+  echo "Waiting for emulator to start (boot_completed)"
+  if [[ $fail_counter -gt timeout_in_sec ]]; then
+    echo "Timeout ($timeout_in_sec seconds) reached; failed to start emulator"
+    exit 1
+  fi
+  sleep $sleep_time
+done
+
+echo "Emulator is ready"
