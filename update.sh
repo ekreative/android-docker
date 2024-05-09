@@ -12,8 +12,8 @@ declare -A default_node_variants=(
   ['33']='18'
 )
 
-jdk_variants=('11')
-default_jdk_variant='11'
+jdk_variants=('17')
+default_jdk_variant='17'
 
 declare -A build_tools=(
   ['30']='30.0.3'

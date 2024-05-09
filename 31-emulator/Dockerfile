@@ -7,7 +7,7 @@ RUN apt-get update \
     expect \
     locales \
     nano \
-    openjdk-11-jdk \
+    openjdk-17-jdk \
     unzip \
     curl \
     xz-utils \
