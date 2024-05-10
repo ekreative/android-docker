@@ -75,7 +75,7 @@ jobs:
       packages: write
     strategy:
       matrix:
-        version: [ '30', '31', '32', '33' ]
+        version: [ '30', '31', '32', '33', '33-jdk17' ]
         variant: [ '', '-emulator', '-ndk', '-stf-client' ]
     needs: [checks-hadolint, checks-shfmt, checks-shellcheck, checks-update]
     steps:
