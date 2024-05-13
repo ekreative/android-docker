@@ -85,20 +85,14 @@ RUN sdkmanager --verbose $ANDROID_NDK_PACKAGES
 ##</ndk>##
 
 ##<ruby-bundler>##
+# hadolint ignore=DL3008,SC1091
 RUN apt-get update \
-&& apt-get -y --no-install-recommends install imagemagick=8:6.9.10.23+dfsg-2.1ubuntu11 \
-&& rm -rf /var/lib/apt/lists/* \
-&& curl -k -0L https://github.com/postmodern/ruby-install/archive/master.tar.gz -o ruby-install.tar.gz \
-&& tar -xzvf ruby-install.tar.gz
-WORKDIR /ruby-install-master
-RUN apt-get update && apt-get -y --no-install-recommends install make=4.2.1-1.2 \
-&& rm -rf /var/lib/apt/lists/* \
-&& make install
-WORKDIR /
-RUN apt-get update \
-&& rm -rf ruby-install-master && rm -rf ruby-install.tar.gz \
-&& ruby-install --latest \
-&& ruby-install -i /usr/local/ ruby 2.6.8 -- --disable-install-doc \
-&& gem update --system --no-document \
-&& gem install bundler:1.17.3 --force
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends gnupg2 \
+  && rm -rf /var/lib/apt/lists/* \
+  && gpg2 --keyserver keyserver.ubuntu.com --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB \
+  && curl -sSL https://get.rvm.io | bash -s stable --ruby --without-gems="rvm rubygems-bundler" \
+  && echo "source /etc/profile.d/rvm.sh" >> /etc/bash.bashrc \
+  && source /usr/local/rvm/scripts/rvm \
+  && gem install bundler:1.17.3 --force --no-document
+SHELL [ "/bin/bash", "-l", "-c" ]
 ##</ruby-bundler>##

@@ -1,32 +1,33 @@
 #!/usr/bin/env bash
 set -e
 
-variants=('30' '31' '32' '33')
+variants=('32' '33' '34')
 
 ## Disabled creating extra node variants, rather just having a default for each SDK
 #node_variants=('14' '18')
 declare -A default_node_variants=(
-  ['30']='14'
-  ['31']='14'
   ['32']='18'
   ['33']='18'
+  ['34']='20'
 )
 
-jdk_variants=('11')
-default_jdk_variant='11'
+jdk_variants=('11' '17')
+declare -A default_jdk_variants=(
+  ['32']='11'
+  ['33']='11'
+  ['34']='17'
+)
 
 declare -A build_tools=(
-  ['30']='30.0.3'
-  ['31']='31.0.0'
   ['32']='32.0.0'
-  ['33']='33.0.0'
+  ['33']='33.0.2'
+  ['34']='34.0.0'
 )
 
 declare -A extra_packages=(
-  ['30']='"build-tools;30.0.0 build-tools;30.0.1 build-tools;30.0.2"'
-  ['31']='"build-tools;31.0.0"'
   ['32']='"build-tools;32.0.0"'
-  ['33']='"build-tools;33.0.0 build-tools;33.0.1 build-tools;33.0.2"'
+  ['33']='"build-tools;33.0.0 build-tools;33.0.1"'
+  ['34']=''
 )
 
 for variant in "${variants[@]}"; do
@@ -35,6 +36,7 @@ for variant in "${variants[@]}"; do
     for type in 'default' 'emulator' 'ndk' 'stf-client'; do
       template="Dockerfile.template"
       default_node_variant="${default_node_variants[$variant]}"
+      default_jdk_variant="${default_jdk_variants[$variant]}"
       node_variant="$default_node_variant"
       if [ "$type" != "default" ]; then
         dir="$variant-$type"

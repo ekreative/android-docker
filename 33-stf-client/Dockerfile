@@ -68,9 +68,9 @@ RUN license_accepter
 
 # Install Android platform and things
 ENV ANDROID_PLATFORM_VERSION=33
-ENV ANDROID_BUILD_TOOLS_VERSION=33.0.0
+ENV ANDROID_BUILD_TOOLS_VERSION=33.0.2
 ENV PATH=$ANDROID_SDK_ROOT/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH
-ENV ANDROID_EXTRA_PACKAGES="build-tools;33.0.0 build-tools;33.0.1 build-tools;33.0.2"
+ENV ANDROID_EXTRA_PACKAGES="build-tools;33.0.0 build-tools;33.0.1"
 ENV ANDROID_REPOSITORIES="extras;android;m2repository extras;google;m2repository"
 ENV ANDROID_CONSTRAINT_PACKAGES="extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2 extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1 extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0"
 RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_VERSION" "build-tools;$ANDROID_BUILD_TOOLS_VERSION" $ANDROID_EXTRA_PACKAGES $ANDROID_REPOSITORIES $ANDROID_CONSTRAINT_PACKAGES
@@ -98,20 +98,14 @@ RUN adb keygen ~/.android/adbkey
 
 
 ##<ruby-bundler>##
+# hadolint ignore=DL3008,SC1091
 RUN apt-get update \
-&& apt-get -y --no-install-recommends install imagemagick=8:6.9.10.23+dfsg-2.1ubuntu11 \
-&& rm -rf /var/lib/apt/lists/* \
-&& curl -k -0L https://github.com/postmodern/ruby-install/archive/master.tar.gz -o ruby-install.tar.gz \
-&& tar -xzvf ruby-install.tar.gz
-WORKDIR /ruby-install-master
-RUN apt-get update && apt-get -y --no-install-recommends install make=4.2.1-1.2 \
-&& rm -rf /var/lib/apt/lists/* \
-&& make install
-WORKDIR /
-RUN apt-get update \
-&& rm -rf ruby-install-master && rm -rf ruby-install.tar.gz \
-&& ruby-install --latest \
-&& ruby-install -i /usr/local/ ruby 2.6.8 -- --disable-install-doc \
-&& gem update --system --no-document \
-&& gem install bundler:1.17.3 --force
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends gnupg2 \
+  && rm -rf /var/lib/apt/lists/* \
+  && gpg2 --keyserver keyserver.ubuntu.com --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB \
+  && curl -sSL https://get.rvm.io | bash -s stable --ruby --without-gems="rvm rubygems-bundler" \
+  && echo "source /etc/profile.d/rvm.sh" >> /etc/bash.bashrc \
+  && source /usr/local/rvm/scripts/rvm \
+  && gem install bundler:1.17.3 --force --no-document
+SHELL [ "/bin/bash", "-l", "-c" ]
 ##</ruby-bundler>##

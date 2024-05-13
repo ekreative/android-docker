@@ -4,6 +4,24 @@ An image that lets us build android apps with docker using gitlab-ci
 
 ## Tags available
 
+* `34`
+* `34-emulator`
+* `34-ndk`
+* `34-stf-client`
+* `34-jdk11`
+* `33`
+* `33-emulator`
+* `33-ndk`
+* `33-stf-client`
+* `33-jdk17`
+* `32`
+* `32-emulator`
+* `32-ndk`
+* `32-stf-client`
+* `32-jdk17`
+
+## Unmaintained tags
+
 * `31`
 * `31-emulator`
 * `31-ndk`
@@ -12,9 +30,6 @@ An image that lets us build android apps with docker using gitlab-ci
 * `30-emulator`
 * `30-ndk`
 * `30-stf-client`
-
-## Unmaintained tags
-
 * `30-ruby-bundler` (ruby included in all builds now)
 * `31-ruby-bundler`
 * `29`
@@ -26,13 +41,6 @@ An image that lets us build android apps with docker using gitlab-ci
 * `28-emulator`
 * `28-ndk`
 * `28-stf-client`
-
-## Build command
-
-```bash
-./update.sh
-docker build -t ekreative/android:latest 30
-```
 
 ## Build an app
 
@@ -47,6 +55,15 @@ docker run --rm -ti -v /dev/kvm:/dev/kvm --privileged ekreative/android
 android-start-emulator
 /gradlew cAT
 ```
+
+## Contributing
+
+This repo stores commited versions of Dockerfiles generated using the `./update.sh` script.
+To update the Dockerfiles, run `./update.sh` and commit the changes.
+When adding new versions remember to update the github workflow so that it builds them all.
+I tend to remove an older version when adding a new one. To keep just the last 2-3 versions being built. Remove old
+versions from the `Dockerfile`.
+You should also update the list of tags in the README.md file.
 
 ## Credit
 

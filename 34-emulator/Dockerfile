@@ -7,7 +7,7 @@ RUN apt-get update \
     expect \
     locales \
     nano \
-    openjdk-11-jdk \
+    openjdk-17-jdk \
     unzip \
     curl \
     xz-utils \
@@ -32,8 +32,8 @@ RUN apt-get update \
   # For nodejs we use nodesource, its nice and easy and gets us the correct version
   # Find latest link https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
   && curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
-  && echo "deb https://deb.nodesource.com/node_14.x $(lsb_release -s -c) main" | tee /etc/apt/sources.list.d/nodesource.list \
-  && echo "deb-src https://deb.nodesource.com/node_14.x $(lsb_release -s -c) main" | tee -a /etc/apt/sources.list.d/nodesource.list \
+  && echo "deb https://deb.nodesource.com/node_20.x $(lsb_release -s -c) main" | tee /etc/apt/sources.list.d/nodesource.list \
+  && echo "deb-src https://deb.nodesource.com/node_20.x $(lsb_release -s -c) main" | tee -a /etc/apt/sources.list.d/nodesource.list \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
     nodejs \
@@ -67,32 +67,47 @@ ENV PATH=/opt/tools:$PATH
 RUN license_accepter
 
 # Install Android platform and things
-ENV ANDROID_PLATFORM_VERSION=31
-ENV ANDROID_BUILD_TOOLS_VERSION=31.0.0
+ENV ANDROID_PLATFORM_VERSION=34
+ENV ANDROID_BUILD_TOOLS_VERSION=34.0.0
 ENV PATH=$ANDROID_SDK_ROOT/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH
-ENV ANDROID_EXTRA_PACKAGES="build-tools;31.0.0"
+ENV ANDROID_EXTRA_PACKAGES=
 ENV ANDROID_REPOSITORIES="extras;android;m2repository extras;google;m2repository"
 ENV ANDROID_CONSTRAINT_PACKAGES="extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2 extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1 extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0"
 RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_VERSION" "build-tools;$ANDROID_BUILD_TOOLS_VERSION" $ANDROID_EXTRA_PACKAGES $ANDROID_REPOSITORIES $ANDROID_CONSTRAINT_PACKAGES
 
 
+##<emulator>##
+# hadolint ignore=DL3008
+RUN apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    file \
+    qt5-default \
+    libpulse0 \
+  && rm -rf /var/lib/apt/lists/*
+
+ENV ANDROID_EMULATOR_PACKAGE="system-images;android-$ANDROID_PLATFORM_VERSION;google_apis_playstore;x86_64"
+RUN sdkmanager --verbose "emulator" $ANDROID_EMULATOR_PACKAGE
+
+# Fix for emulator detect 64bit
+ENV SHELL=/bin/bash
+# https://www.bram.us/2017/05/12/launching-the-android-emulator-from-the-command-line/
+ENV PATH=$ANDROID_SDK_ROOT/emulator:$PATH
+
+COPY tools-emulator/android-start-emulator /opt/tools/
+COPY tools-emulator/android-wait-for-emulator /opt/tools/
+RUN adb keygen ~/.android/adbkey
+##</emulator>##
 
 
 ##<ruby-bundler>##
+# hadolint ignore=DL3008,SC1091
 RUN apt-get update \
-&& apt-get -y --no-install-recommends install imagemagick=8:6.9.10.23+dfsg-2.1ubuntu11 \
-&& rm -rf /var/lib/apt/lists/* \
-&& curl -k -0L https://github.com/postmodern/ruby-install/archive/master.tar.gz -o ruby-install.tar.gz \
-&& tar -xzvf ruby-install.tar.gz
-WORKDIR /ruby-install-master
-RUN apt-get update && apt-get -y --no-install-recommends install make=4.2.1-1.2 \
-&& rm -rf /var/lib/apt/lists/* \
-&& make install
-WORKDIR /
-RUN apt-get update \
-&& rm -rf ruby-install-master && rm -rf ruby-install.tar.gz \
-&& ruby-install --latest \
-&& ruby-install -i /usr/local/ ruby 2.6.8 -- --disable-install-doc \
-&& gem update --system --no-document \
-&& gem install bundler:1.17.3 --force
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends gnupg2 \
+  && rm -rf /var/lib/apt/lists/* \
+  && gpg2 --keyserver keyserver.ubuntu.com --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB \
+  && curl -sSL https://get.rvm.io | bash -s stable --ruby --without-gems="rvm rubygems-bundler" \
+  && echo "source /etc/profile.d/rvm.sh" >> /etc/bash.bashrc \
+  && source /usr/local/rvm/scripts/rvm \
+  && gem install bundler:1.17.3 --force --no-document
+SHELL [ "/bin/bash", "-l", "-c" ]
 ##</ruby-bundler>##
