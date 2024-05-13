@@ -93,6 +93,7 @@ RUN apt-get update \
   && curl -sSL https://get.rvm.io | bash -s stable --ruby --without-gems="rvm rubygems-bundler" \
   && echo "source /etc/profile.d/rvm.sh" >> /etc/bash.bashrc \
   && source /usr/local/rvm/scripts/rvm \
-  && gem install bundler:1.17.3 --force --no-document
-SHELL [ "/bin/bash", "-l", "-c" ]
+  && gem install bundler -v '~> 1.0' --force --no-document --default
+SHELL [ "/bin/bash", "-lc" ]
+CMD [ "/bin/bash", "-lc" ]
 ##</ruby-bundler>##
