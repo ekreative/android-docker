@@ -4,6 +4,19 @@ An image that lets us build android apps with docker using gitlab-ci
 
 ## Tags available
 
+* `33`
+* `33-emulator`
+* `33-ndk`
+* `33-stf-client`
+* `33-jdk17`
+* `32`
+* `32-emulator`
+* `32-ndk`
+* `32-stf-client`
+* `32-jdk17`
+
+## Unmaintained tags
+
 * `31`
 * `31-emulator`
 * `31-ndk`
@@ -12,9 +25,6 @@ An image that lets us build android apps with docker using gitlab-ci
 * `30-emulator`
 * `30-ndk`
 * `30-stf-client`
-
-## Unmaintained tags
-
 * `30-ruby-bundler` (ruby included in all builds now)
 * `31-ruby-bundler`
 * `29`

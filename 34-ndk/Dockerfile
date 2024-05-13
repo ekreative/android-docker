@@ -7,7 +7,7 @@ RUN apt-get update \
     expect \
     locales \
     nano \
-    openjdk-11-jdk \
+    openjdk-17-jdk \
     unzip \
     curl \
     xz-utils \
@@ -32,8 +32,8 @@ RUN apt-get update \
   # For nodejs we use nodesource, its nice and easy and gets us the correct version
   # Find latest link https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
   && curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
-  && echo "deb https://deb.nodesource.com/node_14.x $(lsb_release -s -c) main" | tee /etc/apt/sources.list.d/nodesource.list \
-  && echo "deb-src https://deb.nodesource.com/node_14.x $(lsb_release -s -c) main" | tee -a /etc/apt/sources.list.d/nodesource.list \
+  && echo "deb https://deb.nodesource.com/node_20.x $(lsb_release -s -c) main" | tee /etc/apt/sources.list.d/nodesource.list \
+  && echo "deb-src https://deb.nodesource.com/node_20.x $(lsb_release -s -c) main" | tee -a /etc/apt/sources.list.d/nodesource.list \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
     nodejs \
@@ -67,10 +67,10 @@ ENV PATH=/opt/tools:$PATH
 RUN license_accepter
 
 # Install Android platform and things
-ENV ANDROID_PLATFORM_VERSION=31
-ENV ANDROID_BUILD_TOOLS_VERSION=31.0.0
+ENV ANDROID_PLATFORM_VERSION=34
+ENV ANDROID_BUILD_TOOLS_VERSION=34.0.0
 ENV PATH=$ANDROID_SDK_ROOT/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH
-ENV ANDROID_EXTRA_PACKAGES="build-tools;31.0.0"
+ENV ANDROID_EXTRA_PACKAGES=
 ENV ANDROID_REPOSITORIES="extras;android;m2repository extras;google;m2repository"
 ENV ANDROID_CONSTRAINT_PACKAGES="extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2 extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1 extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0"
 RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_VERSION" "build-tools;$ANDROID_BUILD_TOOLS_VERSION" $ANDROID_EXTRA_PACKAGES $ANDROID_REPOSITORIES $ANDROID_CONSTRAINT_PACKAGES
