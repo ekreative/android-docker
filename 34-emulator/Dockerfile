@@ -109,4 +109,5 @@ RUN apt-get update \
   && echo -e "source /usr/local/rvm/scripts/rvm\n$(cat /etc/bash.bashrc)" >/etc/bash.bashrc \
   && source /usr/local/rvm/scripts/rvm \
   && gem install bundler -v '~> 1.0' --force --no-document --default
+ENV BASH_ENV="/usr/local/rvm/scripts/rvm"
 ##</ruby-bundler>##
