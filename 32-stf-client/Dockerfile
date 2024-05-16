@@ -107,6 +107,6 @@ RUN apt-get update \
   && echo "source /etc/profile.d/rvm.sh" >> /etc/bash.bashrc \
   && source /usr/local/rvm/scripts/rvm \
   && gem install bundler -v '~> 1.0' --force --no-document --default
-SHELL [ "/bin/bash", "-lc" ]
-CMD [ "/bin/bash", "-lc" ]
+SHELL [ "/bin/bash", "-o", "pipefail", "-lc" ]
+CMD [ "/bin/bash", "-l" ]
 ##</ruby-bundler>##
