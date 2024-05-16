@@ -14,7 +14,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Check update has been run
         run: |
@@ -28,7 +28,7 @@ jobs:
     container: hadolint/hadolint:latest-debian
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Check hadolint
         run: |
@@ -41,7 +41,7 @@ jobs:
     container: mvdan/shfmt:latest-alpine
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Check shfmt
         run: |
@@ -58,7 +58,7 @@ jobs:
     container: koalaman/shellcheck-alpine:latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Check shellcheck
         run: |
