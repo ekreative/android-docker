@@ -5,7 +5,8 @@ name: Create and publish a Docker image
 
 on:
   push:
-    branches: ['*']
+    branches: ["*"]
+  pull_request:
 
 jobs:
   checks-update:
@@ -75,8 +76,8 @@ jobs:
       packages: write
     strategy:
       matrix:
-        version: [ '32', '33', '34' ]
-        variant: [ '', '-emulator', '-ndk', '-stf-client', '-jdk17', '-jdk11' ]
+        version: ["32", "33", "34"]
+        variant: ["", "-emulator", "-ndk", "-stf-client", "-jdk17", "-jdk11"]
     needs: [checks-hadolint, checks-shfmt, checks-shellcheck, checks-update]
     steps:
       - name: Checkout repository
