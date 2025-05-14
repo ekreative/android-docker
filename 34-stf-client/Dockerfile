@@ -1,17 +1,18 @@
-FROM ubuntu:focal
+FROM ubuntu:jammy
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # hadolint ignore=DL3008
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    expect \
-    locales \
-    nano \
-    openjdk-17-jdk \
-    unzip \
-    curl \
-    xz-utils \
-    git \
+  expect \
+  apt-utils \
+  locales \
+  nano \
+  openjdk-17-jdk \
+  unzip \
+  curl \
+  xz-utils \
+  git \
   && rm -rf /var/lib/apt/lists/*
 
 # Seems somethings build better with utf8 locale specified
@@ -26,21 +27,21 @@ ENV LC_ALL=en_US.UTF-8
 # hadolint ignore=DL3008
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
-    apt-transport-https \
-    gnupg \
-    lsb-release \
+  ca-certificates \
+  apt-transport-https \
+  gnupg \
+  lsb-release \
   # For nodejs we use nodesource, its nice and easy and gets us the correct version
   # Find latest link https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
-  && curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
-  && echo "deb https://deb.nodesource.com/node_20.x $(lsb_release -s -c) main" | tee /etc/apt/sources.list.d/nodesource.list \
-  && echo "deb-src https://deb.nodesource.com/node_20.x $(lsb_release -s -c) main" | tee -a /etc/apt/sources.list.d/nodesource.list \
+  && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | gpg --dearmor -o /usr/share/keyrings/nodesource.gpg \
+  && echo "deb [signed-by=/usr/share/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/nodesource.list \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
-    nodejs \
+  nodejs \
   && rm -rf /var/lib/apt/lists/*
 
 # hadolint ignore=DL3016
-RUN npm -g install xcode-build-tools yarn
+RUN npm install -g xcode-build-tools yarn
 ##</node>##
 
 # Install the SDK
@@ -48,12 +49,12 @@ RUN npm -g install xcode-build-tools yarn
 ENV ANDROID_CMDLINE_TOOLS=https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
 # hadolint ignore=DL3003
 RUN ( \
-    cd /opt \
-    && mkdir android-sdk-linux \
-    && curl -sSL -o cmdline-tools.zip "$ANDROID_CMDLINE_TOOLS" \
-    && unzip cmdline-tools.zip -d android-sdk-linux/cmdline-tools \
-    && rm -f cmdline-tools.zip \
-    && chown -R root:root android-sdk-linux \
+  cd /opt \
+  && mkdir android-sdk-linux \
+  && curl -sSL -o cmdline-tools.zip "$ANDROID_CMDLINE_TOOLS" \
+  && unzip cmdline-tools.zip -d android-sdk-linux/cmdline-tools \
+  && rm -f cmdline-tools.zip \
+  && chown -R root:root android-sdk-linux \
   )
 
 ENV ANDROID_SDK_ROOT=/opt/android-sdk-linux
@@ -72,26 +73,21 @@ ENV ANDROID_BUILD_TOOLS_VERSION=34.0.0
 ENV PATH=$ANDROID_SDK_ROOT/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH
 ENV ANDROID_EXTRA_PACKAGES=
 ENV ANDROID_REPOSITORIES="extras;android;m2repository extras;google;m2repository"
-ENV ANDROID_CONSTRAINT_PACKAGES="extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2 extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1 extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0"
+#ENV ANDROID_CONSTRAINT_PACKAGES="extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2 extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1 extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0"
+RUN sdkmanager --update 
 RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_VERSION" "build-tools;$ANDROID_BUILD_TOOLS_VERSION" $ANDROID_EXTRA_PACKAGES $ANDROID_REPOSITORIES $ANDROID_CONSTRAINT_PACKAGES
 
 ##<stf-client>##
 # hadolint ignore=DL3008,DL3028,SC2086
 RUN apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    ruby \
-  && savedAptMark="$(apt-mark showmanual)" \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    # stf-client
-    build-essential \
-    gem \
+  ruby-full \
+  #stf-client
+  build-essential \
+  rubygems \
   # Without rake fails to install stf-client
   && gem install rake stf-client --no-doc \
-  && apt-mark auto '.*' > /dev/null \
-  && apt-mark manual $savedAptMark > /dev/null \
-  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
-  && rm -rf /var/lib/apt/lists/* \
-
+  && rm -rf /var/lib/apt/lists/*
 RUN adb keygen ~/.android/adbkey
 ##</stf-client>##
 
@@ -100,12 +96,25 @@ RUN adb keygen ~/.android/adbkey
 ##<ruby-bundler>##
 # hadolint ignore=DL3008,SC1091
 RUN apt-get update \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends gnupg2 \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends gnupg2 build-essential \
   && rm -rf /var/lib/apt/lists/* \
-  && gpg2 --keyserver keyserver.ubuntu.com --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB \
-  && curl -sSL https://get.rvm.io | bash -s stable --ruby --without-gems="rvm rubygems-bundler" \
-  && echo -e "source /usr/local/rvm/scripts/rvm\n$(cat /etc/bash.bashrc)" >/etc/bash.bashrc \
-  && source /usr/local/rvm/scripts/rvm \
-  && gem install bundler -v '~> 1.0' --force --no-document --default
+  && gpg2 --keyserver keyserver.ubuntu.com --recv-keys \
+  409B6B1796C275462A1703113804BB82D39DC0E3 \
+  7D2BAF1CF37B13E2069D6956105BD0E739499BDB \
+  && curl -sSL https://get.rvm.io | bash -s stable --without-gems="rvm rubygems-bundler" \
+  && echo 'source /usr/local/rvm/scripts/rvm' >> /etc/bash.bashrc
+
 ENV BASH_ENV="/usr/local/rvm/scripts/rvm"
+
+RUN bash -c "source /usr/local/rvm/scripts/rvm && \
+  rvm install 3.1.2 && \
+  rvm install 3.4.3 && \
+  rvm alias create default 3.4.3"
+
+RUN bash -c "source /usr/local/rvm/scripts/rvm && \
+  for v in 3.1.2 3.4.3; do \
+  rvm use $v; \
+  gem install bundler -v '~>2.0' --no-document; \
+  done \
+  "
 ##</ruby-bundler>##
