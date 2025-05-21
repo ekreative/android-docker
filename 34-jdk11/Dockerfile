@@ -99,9 +99,9 @@ RUN bash -c "source /usr/local/rvm/scripts/rvm && \
   rvm alias create default 3.4.3"
 
 RUN bash -c "source /usr/local/rvm/scripts/rvm && \
-  for v in 3.1.2 3.4.3; do \
-  rvm use $v; \
-  gem install bundler -v '~>2.0' --no-document; \
-  done \
+  rvm use 3.1.2 && \ 
+  gem install bundler -v '~>2.0' --no-document && \
+  rvm use 3.4.3 && \ 
+  gem install bundler -v '~>2.0' --no-document \
   "
 ##</ruby-bundler>##
