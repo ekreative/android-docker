@@ -74,8 +74,14 @@ ENV PATH=$ANDROID_SDK_ROOT/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH
 ENV ANDROID_EXTRA_PACKAGES=
 ENV ANDROID_REPOSITORIES="extras;android;m2repository extras;google;m2repository"
 #ENV ANDROID_CONSTRAINT_PACKAGES="extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2 extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1 extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0"
-RUN sdkmanager --update 
-RUN sdkmanager --verbose "platform-tools" "platforms;android-$ANDROID_PLATFORM_VERSION" "build-tools;$ANDROID_BUILD_TOOLS_VERSION" $ANDROID_EXTRA_PACKAGES $ANDROID_REPOSITORIES $ANDROID_CONSTRAINT_PACKAGES
+RUN sdkmanager --update && \
+    sdkmanager --verbose \
+      "platform-tools" \
+      "platforms;android-${ANDROID_PLATFORM_VERSION}" \
+      "build-tools;${ANDROID_BUILD_TOOLS_VERSION}" \
+      ${ANDROID_EXTRA_PACKAGES:+${ANDROID_EXTRA_PACKAGES}} \
+      ${ANDROID_REPOSITORIES:+${ANDROID_REPOSITORIES}} \
+      ${ANDROID_CONSTRAINT_PACKAGES:+${ANDROID_CONSTRAINT_PACKAGES}}
 
 ##<stf-client>##
 # hadolint ignore=DL3008,DL3028,SC2086
@@ -109,12 +115,9 @@ ENV BASH_ENV="/usr/local/rvm/scripts/rvm"
 RUN bash -c "source /usr/local/rvm/scripts/rvm && \
   rvm install 3.1.2 && \
   rvm install 3.4.3 && \
-  rvm alias create default 3.4.3"
-
-RUN bash -c "source /usr/local/rvm/scripts/rvm && \
-  rvm use 3.1.2 && \ 
+  rvm alias create default 3.4.3 && \
+  rvm use 3.1.2 && \
   gem install bundler -v '~>2.0' --no-document && \
-  rvm use 3.4.3 && \ 
-  gem install bundler -v '~>2.0' --no-document \
-  "
+  rvm use 3.4.3 && \
+  gem install bundler -v '~>2.0' --no-document"
 ##</ruby-bundler>##
