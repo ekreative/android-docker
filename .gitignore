@@ -1,0 +1,3 @@
+build_docker_images.sh
+docker_build_log.txt
+.DS_Store

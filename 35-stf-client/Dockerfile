@@ -34,7 +34,7 @@ RUN apt-get update \
   # For nodejs we use nodesource, its nice and easy and gets us the correct version
   # Find latest link https://github.com/nodesource/distributions/blob/master/README.md#installation-instructions
   && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | gpg --dearmor -o /usr/share/keyrings/nodesource.gpg \
-  && echo "deb [signed-by=/usr/share/keyrings/nodesource.gpg] https://deb.nodesource.com/node_18.x $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/nodesource.list \
+  && echo "deb [signed-by=/usr/share/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/nodesource.list \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
   nodejs \
@@ -68,10 +68,10 @@ ENV PATH=/opt/tools:$PATH
 RUN license_accepter
 
 # Install Android platform and things
-ENV ANDROID_PLATFORM_VERSION=33
-ENV ANDROID_BUILD_TOOLS_VERSION=33.0.2
+ENV ANDROID_PLATFORM_VERSION=35
+ENV ANDROID_BUILD_TOOLS_VERSION=35.0.1
 ENV PATH=$ANDROID_SDK_ROOT/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$PATH
-ENV ANDROID_EXTRA_PACKAGES="build-tools;33.0.0 build-tools;33.0.1"
+ENV ANDROID_EXTRA_PACKAGES=
 ENV ANDROID_REPOSITORIES="extras;android;m2repository extras;google;m2repository"
 #ENV ANDROID_CONSTRAINT_PACKAGES="extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2 extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1 extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0"
 RUN sdkmanager --update && \
@@ -83,6 +83,19 @@ RUN sdkmanager --update && \
       ${ANDROID_REPOSITORIES:+${ANDROID_REPOSITORIES}} \
       ${ANDROID_CONSTRAINT_PACKAGES:+${ANDROID_CONSTRAINT_PACKAGES}}
 
+##<stf-client>##
+# hadolint ignore=DL3008,DL3028,SC2086
+RUN apt-get update \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+  ruby-full \
+  #stf-client
+  build-essential \
+  rubygems \
+  # Without rake fails to install stf-client
+  && gem install rake stf-client --no-doc \
+  && rm -rf /var/lib/apt/lists/*
+RUN adb keygen ~/.android/adbkey
+##</stf-client>##
 
 
 

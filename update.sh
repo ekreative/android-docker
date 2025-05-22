@@ -1,33 +1,33 @@
 #!/usr/bin/env bash
 set -e
 
-variants=('32' '33' '34')
+variants=('33' '34' '35')
 
 ## Disabled creating extra node variants, rather just having a default for each SDK
-#node_variants=('14' '18')
+#node_variants=('18' '20')
 declare -A default_node_variants=(
-  ['32']='18'
   ['33']='18'
   ['34']='20'
+  ['35']='20'
 )
 
 jdk_variants=('11' '17')
 declare -A default_jdk_variants=(
-  ['32']='11'
   ['33']='11'
   ['34']='17'
+  ['35']='17'
 )
 
 declare -A build_tools=(
-  ['32']='32.0.0'
   ['33']='33.0.2'
   ['34']='34.0.0'
+  ['35']='35.0.1'
 )
 
 declare -A extra_packages=(
-  ['32']='"build-tools;32.0.0"'
   ['33']='"build-tools;33.0.0 build-tools;33.0.1"'
   ['34']=''
+  ['35']=''
 )
 
 for variant in "${variants[@]}"; do
